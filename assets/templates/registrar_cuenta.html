@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Usuario</title>
+  <link rel="stylesheet" href="/css/registrar_cuenta_style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Crear Usuario</h1>
+    <form action="/ruta_de_creacion" method="post" onsubmit="return mostrarMensaje()">
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" name="nombre" required>
+
+      <label for="apellido">Apellido:</label>
+      <input type="text" id="apellido" name="apellido" required>
+
+      <label for="usuario">Usuario:</label>
+      <input type="text" id="usuario" name="usuario" required>
+
+      <label for="contrasena">Contraseña:</label>
+      <input type="password" id="contrasena" name="contrasena" required>
+
+      <label for="rol">Tipo de Usuario:</label>
+      <select id="rol" name="rol" required>
+        <option value="administrador">Administrador Docente</option>
+        <option value="profesor">Profesor</option>
+        <option value="estudiante">Estudiante</option>
+      </select>
+
+      <input type="submit" value="Crear Usuario">
+    </form>
+    
+    <!-- Fondo difuminado -->
+    <div class="fondo-difuminado" id="fondoDifuminado"></div>
+
+    <!-- Cartel de Usuario Creado -->
+    <div class="mensaje-creacion" id="mensajeCreacion">
+      <p>Usuario creado exitosamente.</p>
+      <button onclick="redirectToUsuarios()">OK</button>
+    </div>
+  </div>
+
+  <button class="home-button" onclick="redirectToHomePage()">Página Principal</button>
+
+  <script>
+    function mostrarMensaje() {
+      var nombre = document.getElementById("nombre").value;
+      var apellido = document.getElementById("apellido").value;
+      var usuario = document.getElementById("usuario").value;
+      var contrasena = document.getElementById("contrasena").value;
+
+      if (nombre && apellido && usuario && contrasena) {
+        // Muestra el fondo difuminado
+        document.getElementById("fondoDifuminado").style.display = "block";
+        // Muestra el cartel
+        document.getElementById("mensajeCreacion").style.display = "block";
+        // Detén el envío del formulario (si es necesario)
+        return false;
+      } else {
+        alert("Completa todos los campos antes de crear el usuario.");
+        return false;
+      }
+    }
+
+    function redirectToHomePage() {
+      // Implementa la redirección a la Página Principal según tus necesidades
+    }
+
+    function redirectToUsuarios() {
+      // Implementa la redirección a la Página de Revisar Cuentas según tus necesidades
+      window.location.href = "revisar_cuentas.html";
+    }
+  </script>
+</body>
+</html>
