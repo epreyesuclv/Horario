@@ -1,0 +1,29 @@
+/* revisar_horario_style.css */
+body {
+    background: linear-gradient(120deg, #AF601A, #F1948A);
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+.horario-card {
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.opciones {
+    margin-top: 10px;
+}
+
+.btn-secondary {
+    background-color: #e74c3c;
+    color: #fff;
+    border-radius: 10px;
+    margin-top: 20px;
+}

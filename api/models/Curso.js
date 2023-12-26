@@ -12,8 +12,8 @@ module.exports = {
     //  ╔═╗╦═╗╦╔╦╗╦╔╦╗╦╦  ╦╔═╗╔═╗
     //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
     //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
-    anno: { type: 'integer', required: true },
-    semestre: { type: 'integer', required: true },
+    anno: { type: 'number', required: true },
+    semestre: { type: 'number', required: true },
     inicio: { type: 'string', columnType: 'date' },
     fin: { type: 'string', columnType: 'date' },
     carrera: {
