@@ -7,20 +7,26 @@
 
 module.exports = {
 
-
 	/**
 	 * `AsignaturaController.Asignatura()`
 	 */
 	horario: async function (req, res) {
-		return res.json({
-			todo: 'horario() is not implemented yet!'
-		});
+		//load from db
+		const data = { array: [{ name: "Pepito", id: 1 }] }
+		return res.view('pages/dashboard/revisar-horario', data)
 	},
 	createHorario: async function (req, res) {
-		return res.json({
-			todo: 'createHorario() is not implemented yet!'
-		});
-	}
+		// load db
 
+	},
+	editHorario: async function (req, res) {
+		console.log(req.params)
+
+		//load from db
+		const data = {
+
+		}
+		res.view('pages/dashboard/edit-horario', data)
+	}
 };
 

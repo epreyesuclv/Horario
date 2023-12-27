@@ -1,0 +1,26 @@
+<div id="revisar_horario">
+
+	<div class="container mt-5">
+		<h1>Listado de Horarios</h1>
+		<% for( let index=0; index < array.length; index++ ) { %>
+			<!-- Ejemplo de un horario -->
+			<div class="horario-card d-flex">
+				<h2 style="margin-right: 10px;">
+					<%= array[index].name %>
+				</h2>
+				<%= console.log(array) %>
+					<div class="opciones">
+						<a href="#" class="btn btn-success">Descargar</a>
+						<a href="/edit-horario/<%= array[index].id %>" class="btn btn-primary">Editar</a>
+						<a href="#" class="btn btn-danger">Eliminar</a>
+					</div>
+			</div>
+			<% } %>
+
+	</div>
+
+	<!-- Enlaces a Bootstrap y jQuery (asegúrate de tener estos archivos en tu proyecto) -->
+	<script src="js/bootstrap-4.5.3-dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+</div>

@@ -33,6 +33,9 @@ module.exports.routes = {
   'GET /account/password': { action: 'account/view-edit-password' },
   'GET /account/profile': { action: 'account/view-edit-profile' },
   'GET /hacer_horario': { action: 'horario/createHorario' },
+  'GET /revisar_horario': { action: 'horario/horario' },
+  'GET /edit-horario/:id': { action: 'horario/editHorario' },
+  'GET /list-profesor': { action: 'profesor/listProfesor' },
 
 
   //  ╔╦╗╦╔═╗╔═╗  ╦═╗╔═╗╔╦╗╦╦═╗╔═╗╔═╗╔╦╗╔═╗   ┬   ╔╦╗╔═╗╦ ╦╔╗╔╦  ╔═╗╔═╗╔╦╗╔═╗

@@ -6,7 +6,10 @@
  */
 
 module.exports = {
-  
+	listProfesor: async function (req, res) {
+		const data = { array: [{ name: "pepito" }] }
+		return res.view('pages/dashboard/list-profesor', data)
+	}
 
 };
 

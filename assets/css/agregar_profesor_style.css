@@ -11,6 +11,10 @@ body {
 }
 
 .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    gap: 20px;
     background-color: rgba(255, 255, 255, 0.7);
     padding: 40px;
     border-radius: 10px;
@@ -18,33 +22,35 @@ body {
     text-align: center;
     width: 400px;
     max-width: 100%;
-    margin: 20px;
-    position: relative; /* Para posicionar el botón dentro del contenedor */
 }
 
 h1 {
     color: #2c3e50;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
+.select-section,
+.form-section,
+.button-group,
+.menu {
     margin-top: 20px;
 }
 
 label {
-    margin-top: 10px;
+    display: block;
+    margin-bottom: 5px;
 }
 
-input, select {
-    margin-top: 5px;
+select, input {
+    width: calc(100% - 20px);
     padding: 10px;
     border: none;
     border-radius: 5px;
     color: #000;
+    margin-top: 5px;
 }
 
-input[type="submit"] {
+button {
+    width: calc(100% - 20px);
     background-color: #e74c3c;
     color: #fff;
     cursor: pointer;
@@ -54,6 +60,10 @@ input[type="submit"] {
     margin-top: 20px;
 }
 
+.hidden {
+    display: none;
+}
+
 .home-button {
     background-color: #e74c3c;
     color: #fff;
@@ -61,9 +71,7 @@ input[type="submit"] {
     border: none;
     cursor: pointer;
     border-radius: 15px;
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+    margin-top: 20px;
 }
 
 .mensaje-creacion {
@@ -91,16 +99,4 @@ input[type="submit"] {
     border: none;
     cursor: pointer;
     border-radius: 5px;
-}
-
-/* Estilos para el fondo difuminado */
-.fondo-difuminado {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 999;
 }
