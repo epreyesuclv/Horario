@@ -20,6 +20,8 @@ parasails.registerPage('list-profesor', {
   //  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
-    //…
+    storeProfesorName: function (id) {
+        console.log("aqui si")
+    }
   }
 });

@@ -14,7 +14,8 @@ parasails.registerComponent('disabledInput', {
 	//  ╠═╝╠╦╝║ ║╠═╝╚═╗
 	//  ╩  ╩╚═╚═╝╩  ╚═╝
 	props: [
-		'label'
+		'profesorId',
+		'label',
 	],
 
 	//  ╦╔╗╔╦╔╦╗╦╔═╗╦    ╔═╗╔╦╗╔═╗╔╦╗╔═╗
@@ -22,6 +23,8 @@ parasails.registerComponent('disabledInput', {
 	//  ╩╝╚╝╩ ╩ ╩╩ ╩╩═╝  ╚═╝ ╩ ╩ ╩ ╩ ╚═╝
 	data: function () {
 		return {
+			editable: false,
+			labelValue: this.label,
 		};
 	},
 
@@ -29,9 +32,11 @@ parasails.registerComponent('disabledInput', {
 	//  ╠═╣ ║ ║║║║
 	//  ╩ ╩ ╩ ╩ ╩╩═╝
 	template: `<div class="horario-card d-flex">
-					<h2>{{label}}</h2>
+					<input v-if="editable" :value=[labelValue]></input>
+					<input v-else="editable" disabled :value=[labelValue]></input>
 					<div class="opciones">
-						<a class="btn btn-primary">Editar</a>
+						<a  v-if="!editable" class="btn btn-primary" @click="clickEditar()">Editar</a>
+						<a id="guardarbtn"  v-else class="btn btn-primary" @click="clickGuardar()">Guardar</a>
 						<a href="#" class="btn btn-danger">Eliminar</a>
 					</div>
 				</div>
@@ -42,7 +47,6 @@ parasails.registerComponent('disabledInput', {
 	//  ║  ║╠╣ ║╣ ║  ╚╦╝║  ║  ║╣
 	//  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
 	beforeMount: function () {
-		console.log("before mount")
 	},
 	mounted: async function () {
 		//…
@@ -55,6 +59,16 @@ parasails.registerComponent('disabledInput', {
 	//  ║║║║ ║ ║╣ ╠╦╝╠═╣║   ║ ║║ ║║║║╚═╗
 	//  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
 	methods: {
-
+		clickGuardar: function () {
+			// guardar
+			this.$emit('guardar', {
+			profesorId: this.profesorId,
+			label: this.label,
+			})
+			this.editable = !this.editable;
+		},
+		clickEditar: function () {
+			this.editable = true;
+		}
 	}
 });
