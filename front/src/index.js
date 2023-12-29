@@ -5,9 +5,10 @@ import './index.css';
 
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Login } from './Login';
-import { Home } from './Home';
+import { Login } from './components/Login';
+import { Home } from './components/Home';
 import { Heading } from './layout/Heading';
+import { Logout } from './components/Logout';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -17,6 +18,7 @@ root.render(
       <Routes>
         <Route path='/home' element={<Home></Home>}></Route>
         <Route path='/login' element={<Login></Login>}></Route>
+        <Route path='/logout' element={<Logout></Logout>}></Route>
         <Route path='/'></Route>
       </Routes>
     </BrowserRouter>

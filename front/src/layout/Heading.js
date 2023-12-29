@@ -13,22 +13,30 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { NavLink } from "react-router-dom";
+import jsCookie from 'js-cookie';
 // import Cookie from 
 
 const getCookieSession = () => {
-	return {
-		logged: true
+	console.log(jsCookie.get('username'))
+	if (jsCookie.get('username'))
+		return {
+			logged: true
+		}
+	else return {
+		logged: false
 	}
 }
 const pages = [{ name: 'Login', route: "/login" }];
-const settings = [{ name: 'Logout', route: "/home" }];
+const settings = [{ name: 'Logout', route: "/logout" }];
 export function Heading() {
 
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
-	const user = getCookieSession()
+	const [user, setUser] = React.useState(getCookieSession())
 
-
+	React.useEffect(() => {
+		setUser(getCookieSession())
+	}, [])
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
 	};
@@ -131,7 +139,8 @@ export function Heading() {
 									sx={{ my: 2, color: 'white', display: 'block' }}
 								>
 									{page.name}
-								</Button></NavLink>
+								</Button>
+							</NavLink>
 
 						))}
 					</Box>
