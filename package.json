@@ -214,7 +214,7 @@
     "eventemitter2": "^0.4.14",
     "exit": "^0.1.2",
     "expand-brackets": "^2.1.4",
-    "express": "^4.17.3",
+    "express": "^4.18.2",
     "express-session": "^1.17.0",
     "extend": "^3.0.2",
     "extend-shallow": "^2.0.1",
@@ -310,6 +310,7 @@
     "ignore-by-default": "^1.0.1",
     "image-size": "^0.4.0",
     "import-fresh": "^3.3.0",
+    "import-sync": "^2.2.0",
     "imurmurhash": "^0.1.4",
     "include-all": "^4.0.3",
     "indent-string": "^2.1.0",
@@ -553,6 +554,7 @@
     "sails.io.js-dist": "^1.2.1",
     "semver": "^5.7.2",
     "send": "^0.17.2",
+    "sequelize": "^6.35.2",
     "serve-favicon": "^2.4.5",
     "serve-static": "^1.13.1",
     "set-function-length": "^1.1.1",
@@ -672,6 +674,7 @@
   },
   "devDependencies": {},
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
