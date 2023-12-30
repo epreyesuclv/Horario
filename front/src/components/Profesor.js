@@ -1,10 +1,31 @@
 import { Avatar, IconButton, Input, List, ListItem, ListItemAvatar } from "@mui/material";
 import { Delete, Edit, Save } from "@mui/icons-material";
-import { useState } from "react";
-import { deleteProfesor, updateProfesor } from "../apiconn/data";
-export function Profesor() {
+import { useEffect, useState } from "react";
+import { addProfesor, deleteProfesor, getAllProfesors, updateProfesor } from "../apiconn/data";
+import AddIcon from '@mui/icons-material/Add';
 
-	const [profesors, setProfesors] = useState([{ id: 1, name: "alfonso", editable: true }])
+export function Profesor() {
+	// states
+	const [profesors, setProfesors] = useState([])
+	const [refresh, setRefresh] = useState(true)
+
+	const [newProfesor, setNewProfesor] = useState("")
+	const [addNew, setAddNew] = useState(false)
+
+
+	// effects
+	useEffect(() => {
+		async function fetch() {
+			const data = await getAllProfesors()
+			setProfesors(data.data.map(value => ({ ...value, name: value.nombre, editable: false })))
+		}
+		if (refresh)
+			fetch()
+		return () => {
+			setRefresh(false)
+		}
+	}, [refresh])
+
 	const handleEdit = (id) => () => {
 		const profesor = profesors.find(profesor => profesor.id === id)
 		if (!profesor.editable) {
@@ -20,15 +41,25 @@ export function Profesor() {
 		profesors.find(profesor => profesor.id === id).name = event.target.value
 		setProfesors([...profesors])
 	}
-	const handleDelete = (id) => () => {
-		deleteProfesor(id)
+
+	const handleOnChangeNew = (value) => {
+		setNewProfesor(value.target.value)
 	}
-	
+	const handleDelete = (id) => () => {
+		deleteProfesor(id).then(value => setRefresh(true))
+	}
+	const handleCreate = () => {
+		addProfesor(newProfesor).then(() => setRefresh(true))
+		setAddNew(false)
+		setNewProfesor("")
+	}
+
 	return (
 		<div className="container-fluid" style={{ maxWidth: "500px" }}>
 			<List dense={true}>
 				{profesors.map((value) => (
 					<ListItem
+						key={value.id}
 						secondaryAction={
 							<div>
 								<IconButton onClick={handleEdit(value.id)} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
@@ -48,12 +79,28 @@ export function Profesor() {
 						<Input onChange={handleOnChange(value.id)} disabled={!value.editable} variant="body2"
 							primary="Single-line item"
 							value={value.name}
-
 						>
 						</Input>
 					</ListItem>
 				))
 				}
+				<ListItem sx={{ justifyContent: 'center' }}>
+					{addNew ?
+						<div>
+							<Input onChange={handleOnChangeNew} variant="body2"
+								primary="Single-line item"
+								value={newProfesor}
+							>
+							</Input>
+							<IconButton onClick={handleCreate} >
+								<Save></Save>
+							</IconButton>
+						</div> :
+						<IconButton onClick={() => setAddNew(true)} edge="end" aria-label="delete">
+							<AddIcon />
+						</IconButton>}
+				</ListItem>
+
 			</List>
 		</div>)
 }

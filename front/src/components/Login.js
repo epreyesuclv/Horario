@@ -14,7 +14,7 @@ export function Login() {
 		event.preventDefault()
 		login(email, password).then(value => {
 			Cookie.set('username', email)
-			Cookie.set('token', password)
+			Cookie.set('password', password)
 			navigate("/home")
 		}).catch(err => {
 			setError(true)

@@ -1,7 +1,9 @@
 const { User } = require('../models')
 
 const authentication = async (req, res, next) => {
-	const user = await User.findOne({ where: { username: req.body.username, password: req.body.password } })
+	const { ['authorization-user']: username, ['authorization-password']: password } = req.headers
+	console.log(req.headers)
+	const user = await User.findOne({ where: { username, password } })
 	if (user)
 		next()
 	else
