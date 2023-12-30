@@ -17,7 +17,7 @@ var corsOptions = {
 
 // routes
 const loginRoute = require("./routes/login");
-
+const profesorRoute = require("./routes/profesor")
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
@@ -27,6 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(loginRoute)
+app.use(profesorRoute)
 
 // simple route
 app.get("/", (req, res) => {

@@ -66,5 +66,4 @@ Object.keys(models).forEach(key => {
 models.sequelize = sequelize
 models.Sequelize = Sequelize
 
-console.log(models)
 module.exports = models

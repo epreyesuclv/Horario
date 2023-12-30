@@ -1,5 +1,4 @@
-import { useEffect, useState } from "react"
-import Cookie from 'js-cookie'
+
 import 'bootstrap/dist/css/bootstrap.css';
 import '../styles/pagina_principal_style.css'
 // Put any other imports below so that CSS from your
@@ -25,7 +24,7 @@ export function Home() {
 						<div class="card-body text-white">
 							<h5 class="card-title">Hacer Horario</h5>
 							<p class="card-text">Crea un nuevo horario de manera fácil y rápida.</p>
-							<a href="hacer_horario.html" class="btn btn-primary btn-block">Ir</a>
+							<a href="/hacer_horario" class="btn btn-primary btn-block">Ir</a>
 						</div>
 					</div>
 				</div>
@@ -34,7 +33,7 @@ export function Home() {
 						<div class="card-body text-white">
 							<h5 class="card-title">Revisar Horario</h5>
 							<p class="card-text">Revisa y modifica los horarios existentes con comodidad.</p>
-							<a href="revisar_horario.html" class="btn btn-primary btn-block">Ir</a>
+							<a href="/revisar_horario" class="btn btn-primary btn-block">Ir</a>
 						</div>
 					</div>
 				</div>
@@ -46,16 +45,16 @@ export function Home() {
 						<div class="card-body text-white">
 							<h5 class="card-title">Hacer Horario Especial</h5>
 							<p class="card-text">Crea horarios especiales según tus necesidades.</p>
-							<a href="hacer_horario_especial.html" class="btn btn-primary btn-block">Ir</a>
+							<a href="/hacer_horario_especial" class="btn btn-primary btn-block">Ir</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="card h-100 shadow bg-transparent">
 						<div class="card-body text-white">
-							<h5 class="card-title">Agregar Elementos</h5>
-							<p class="card-text">Añade nuevos elementos al sistema de forma sencilla.</p>
-							<a href="agregar_elementos.html" class="btn btn-primary btn-block">Ir</a>
+							<h5 class="card-title">Profesores</h5>
+							<p class="card-text">Ver y agregar nuevos profesores</p>
+							<a href="/agregar_profesor" class="btn btn-primary btn-block">Ir</a>
 						</div>
 					</div>
 				</div>

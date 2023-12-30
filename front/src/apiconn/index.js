@@ -1,9 +1,17 @@
 
 import axios from 'axios'
-export const apiClient = axios.create({
-	baseURLs: "http://localhost/1337/api/v1",
+import jsCookie from 'js-cookie';
+export const getHeaders = () => ({
 	headers: {
 		Accept: "application/json",
 		"Content-Type": "application/json",
+		"Access-Control-Allow-Origin": "*",
+		"Access-Control-Allow-Methods": "GET,PUT,POST,DELETE",
+		"Authorization-user": jsCookie.get('username') || "",
+		"Authorization-password": jsCookie.get('password') || ""
 	},
+})
+export const apiClient = axios.create({
+	baseURL: "http://localhost:8080",
+
 });

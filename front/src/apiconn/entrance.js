@@ -1,5 +1,9 @@
-import axios from "axios"
+import { apiClient, getHeaders } from './index'
 export const login = (username, password) => {
-	return axios.post("http://localhost:8080/login", { username: username, password })
+	return apiClient.post("/login", { username: username, password }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
 }
 
