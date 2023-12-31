@@ -4,7 +4,7 @@ const { User, Profesor } = require('../models')
 const express = require('express')
 const router = express.Router()
 
-router.use(authentication)
+// router.use(authentication)
 router.get('/profesor', async (req, res) => {
 	const profs = await Profesor.findAll()
 	res.status(200).json(profs)

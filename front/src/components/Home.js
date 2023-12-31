@@ -59,10 +59,6 @@ export function Home() {
 					</div>
 				</div>
 			</div>
-
-			<div class="fixed-bottom text-right mr-3 mb-3">
-				<a href="login.html" class="btn btn-secondary">Regresar al Login</a>
-			</div>
 		</div>
 	)
 }

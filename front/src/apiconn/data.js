@@ -24,7 +24,28 @@ export const getAllProfesors = () => {
 }
 
 export const addProfesor = (name) => {
-	return apiClient.post('/profesor',  { nombre: name },{
+	return apiClient.post('/profesor', { nombre: name }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const getCarreras = (name) => {
+	return apiClient.get('/carreras', {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const getAllAsignaturasBy = (anno, semestre, carrera) => {
+	return apiClient.get('/getAsignaturaByCarrera', {
+		params: {
+			anno,
+			semestre,
+			carrera
+		},
 		headers: {
 			...getHeaders(),
 		}

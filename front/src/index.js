@@ -10,6 +10,7 @@ import { Home } from './components/Home';
 import { Heading } from './layout/Heading';
 import { Logout } from './components/Logout';
 import { Profesor } from './components/Profesor';
+import { CreateHorario } from './components/CreateHorario';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +22,8 @@ root.render(
         <Route path='/login' element={<Login></Login>}></Route>
         <Route path='/logout' element={<Logout></Logout>}></Route>
         <Route path='/agregar_profesor' element={<Profesor></Profesor>}></Route>
+        <Route path='/hacer_horario' element={<CreateHorario></CreateHorario>}></Route>
+
         <Route path='/'></Route>
       </Routes>
     </BrowserRouter>
