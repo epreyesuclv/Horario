@@ -51,3 +51,10 @@ export const getAllAsignaturasBy = (anno, semestre, carrera) => {
 		}
 	})
 }
+export const deleteAsignatura = (id) => {
+	return apiClient.delete('/asignatura/' + id, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}

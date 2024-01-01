@@ -1,6 +1,8 @@
-import { FormControl, Grid, Input, InputLabel, MenuItem, Select } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { getCarreras, getAllAsignaturasBy } from '../apiconn/data'
+import { FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select } from '@mui/material'
+import { useCallback, useEffect, useState } from 'react'
+import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors } from '../apiconn/data'
+import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
+import { GridInput } from './GridInput'
 
 
 export function CreateHorario() {
@@ -13,26 +15,86 @@ export function CreateHorario() {
 		startDate: new Date()
 	})
 	const [carreras, setCarreras] = useState([])
+	const [asignaturas, setAsignaturas] = useState([{ nombre: "Matematica", frecuency: 0, editable: false, profesor: "dasf" }])
+	const [profesores, setProfesores] = useState([])
+	const [addNew, setAddNew] = useState(false)
+	const [newAsignatura, setNewAsignatura] = useState("")
+	const [refresh, setRefresh] = useState(true)
+	const [newFrecuency, setNewFrecuency] = useState(0)
+	const [newProfesor, setNewProfesor] = useState("")
+
+	const fetchAsignaturas = useCallback(async () => {
+
+		if (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "") {
+			const data = await getAllAsignaturasBy(formData.anno, formData.semestre, formData.carrera)
+			setAsignaturas(data.data)
+		}
+
+	}, [formData])
+
+
+	useEffect(() => {
+		async function fetch(params) {
+			const data = await getAllProfesors()
+			setProfesores(data.data)
+		}
+		fetch()
+	}, [])
 
 	useEffect(() => {
 		async function fetch() {
 			const data = await getCarreras()
-			console.log(data.data)
 			setCarreras(data.data)
 		}
 		fetch()
 	}, [])
 
 	useEffect(() => {
-		async function fetch(params) {
-			if (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "") {
-				const data = await getAllAsignaturasBy(formData.anno, formData.semestre, formData.carrera)
-				console.log(data)
-			}
+		if (refresh) {
+			fetchAsignaturas()
+			setRefresh(false)
 		}
-		fetch()
+	}, [fetchAsignaturas, refresh])
 
-	}, [formData])
+	useEffect(() => {
+		fetchAsignaturas()
+	}, [fetchAsignaturas])
+
+	const handleEdit = (id) => () => {
+		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
+		if (!asignatura.editable) {
+			asignatura.editable = true
+			setAsignaturas([...asignaturas])
+		}
+	}
+
+	const handleDelete = (id) => () => {
+		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
+		deleteAsignatura(asignatura.id)
+		setRefresh(true)
+	}
+
+	const handleOnChangeName = (id) => (event) => {
+
+	}
+	const handleOnChangeFrecuency = (id) => (event) => {
+
+	}
+
+	const handleOnChangeProfesor = (id) => (event) => {
+
+	}
+
+	const handleOnChangeNameNew = (event) => {
+		setNewAsignatura(event.target.value)
+	}
+	const handleOnChangeFrecuencyNew = (event) => {
+		setNewFrecuency(event.target.value)
+	}
+
+	const handleOnChangeProfesorNew = (event) => {
+		setNewProfesor(event.target.value)
+	}
 	const handleChange = (name) => (value) => {
 		setFormData(data => ({ ...data, [name]: value.target.value }))
 		// switch (name) {
@@ -45,6 +107,11 @@ export function CreateHorario() {
 		// }
 		console.log(formData)
 	}
+
+	const handleCreate = () => {
+
+	}
+
 	return (
 		<div className="container-fluid">
 			<form>
@@ -141,6 +208,101 @@ export function CreateHorario() {
 
 							</Input>
 						</FormControl>
+					</Grid>
+					<Grid item xs={6} justifyContent={'center'}>
+						<List dense={true}>
+							{asignaturas.map((value) => (
+								<ListItem
+									key={value.id}
+									secondaryAction={
+										<div>
+											<IconButton onClick={handleEdit(value.id)} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
+												{value.editable ? <Save></Save> : <Edit />}
+											</IconButton>
+											<IconButton onClick={handleDelete(value.id)} edge="end" aria-label="delete">
+												<Delete />
+											</IconButton>
+										</div>
+
+									}
+								>
+									<Grid container spacing={3}>
+										<GridInput onChange={handleOnChangeName(value.id)} xs={3} value={value.nombre} disabled={!value.editable}></GridInput>
+										<GridInput
+											disabled={!value.editable}
+											label='Horas Clase'
+											xs={4}
+											value={value.frecuency}
+											onChange={handleOnChangeFrecuency(value.id)}>
+										</GridInput>
+										<Grid item xs={4}>
+											<FormControl fullWidth>
+												<InputLabel id={'id-profesor-' + value.id}>Profesor</InputLabel>
+												<Select
+													disabled={!value.editable}
+													fullWidth
+													id={'id-profesor-' + value.id}
+													label="Profesor"
+													placeholder='Profesor'
+													value={value.profesor}
+													onChange={handleOnChangeProfesor(value.id)}>
+													{
+														profesores.map(value => {
+															return (
+																<MenuItem key={value.id} value={value.id}>
+																	{value.nombre}
+																</MenuItem>
+															)
+														})
+													}
+												</Select>
+											</FormControl>
+
+										</Grid>
+									</Grid>
+								</ListItem>
+							))
+							}
+							<ListItem key={'new'} sx={{ justifyContent: 'center' }}>
+								{addNew ?
+									<Grid container spacing={3}>
+										<GridInput
+											label='Asignatura'
+											type="number"
+											xs={4}
+											value={newAsignatura}
+											onChange={handleOnChangeNameNew}>
+										</GridInput>
+										<GridInput
+											label='Horas Clase'
+											xs={4}
+											value={newFrecuency}
+											onChange={handleOnChangeFrecuencyNew}>
+										</GridInput>
+										<Grid item xs={4}>
+											<Select
+												value={newProfesor}
+												onChange={handleOnChangeProfesorNew}>
+												{
+													profesores.map(value => {
+														return (
+															<MenuItem key={value.id} value={value.id}>
+																{value.nombre}
+															</MenuItem>
+														)
+													})
+												}
+											</Select>
+										</Grid>
+										<IconButton onClick={handleCreate} >
+											<Save></Save>
+										</IconButton>
+									</Grid> :
+									<IconButton onClick={() => setAddNew(true)} edge="end" aria-label="delete">
+										<AddCircleOutline />
+									</IconButton>}
+							</ListItem>
+						</List>
 					</Grid>
 				</Grid>
 			</form>

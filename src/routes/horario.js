@@ -52,4 +52,5 @@ router.get('/getAsignaturaByCarrera', async (req, res) => {
 	res.json(allAsignaturas)
 })
 
+
 module.exports = router

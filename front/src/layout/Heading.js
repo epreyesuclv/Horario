@@ -132,7 +132,7 @@ export function Heading() {
 					</Typography>
 					<Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 						{pages.map((page) => (
-							<NavLink to={page.route}>
+							<NavLink key={page.route} to={page.route}>
 								<Button
 									key={page.name}
 									onClick={handleCloseNavMenu}
