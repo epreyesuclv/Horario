@@ -1,6 +1,6 @@
-import { FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select } from '@mui/material'
+import { Divider, FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select, Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors } from '../apiconn/data'
+import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, changeNameAsignatura, updateAsignatura } from '../apiconn/data'
 import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
 import { GridInput } from './GridInput'
 
@@ -65,24 +65,36 @@ export function CreateHorario() {
 		if (!asignatura.editable) {
 			asignatura.editable = true
 			setAsignaturas([...asignaturas])
+		} else {
+			asignatura.editable = false
+			updateAsignatura(asignatura.id, asignatura.nombre, asignatura.profesor)
+			setAsignaturas([...asignaturas])
 		}
 	}
 
 	const handleDelete = (id) => () => {
 		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
-		deleteAsignatura(asignatura.id)
-		setRefresh(true)
+		if (asignatura.asignProfCurso) {
+			deleteAsignatura(asignatura.asignProfCurso.map(asignProfCurso => asignProfCurso.id))
+			setRefresh(true)
+		}
 	}
 
 	const handleOnChangeName = (id) => (event) => {
-
+		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
+		asignatura.nombre = event.target.value
+		setAsignaturas([...asignaturas])
 	}
 	const handleOnChangeFrecuency = (id) => (event) => {
-
+		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
+		asignatura.frecuency = event.target.value
+		setAsignaturas([...asignaturas])
 	}
 
 	const handleOnChangeProfesor = (id) => (event) => {
-
+		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
+		asignatura.profesor = event.target.value
+		setAsignaturas([...asignaturas])
 	}
 
 	const handleOnChangeNameNew = (event) => {
@@ -209,7 +221,9 @@ export function CreateHorario() {
 							</Input>
 						</FormControl>
 					</Grid>
-					<Grid item xs={6} justifyContent={'center'}>
+					<Grid item xs={12}><Divider ></Divider></Grid>
+					<Grid item xs={12}><Typography variant='h3' textAlign={'center'}>Asignaturas</Typography></Grid>
+					<Grid item xs={10} marginLeft={"30px"} justifyContent={'center'}>
 						<List dense={true}>
 							{asignaturas.map((value) => (
 								<ListItem
@@ -227,7 +241,7 @@ export function CreateHorario() {
 									}
 								>
 									<Grid container spacing={3}>
-										<GridInput onChange={handleOnChangeName(value.id)} xs={3} value={value.nombre} disabled={!value.editable}></GridInput>
+										<GridInput onChange={handleOnChangeName(value.id)} xs={3} value={value.nombre} disabled></GridInput>
 										<GridInput
 											disabled={!value.editable}
 											label='Horas Clase'

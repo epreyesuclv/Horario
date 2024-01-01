@@ -51,8 +51,17 @@ export const getAllAsignaturasBy = (anno, semestre, carrera) => {
 		}
 	})
 }
-export const deleteAsignatura = (id) => {
-	return apiClient.delete('/asignatura/' + id, {
+export const deleteAsignatura = (ids) => {
+	return apiClient.post('/asignaProfCurso/deleteBulk', { ids }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+
+export const updateAsignatura = (id, nombre, profesor) => {
+	return apiClient.put('/asignatura', { id, nombre, profesor }, {
 		headers: {
 			...getHeaders(),
 		}
