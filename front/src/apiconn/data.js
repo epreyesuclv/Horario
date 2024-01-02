@@ -60,8 +60,8 @@ export const deleteAsignatura = (ids) => {
 }
 
 
-export const updateAsignatura = (id, nombre, profesor) => {
-	return apiClient.put('/asignatura', { id, nombre, profesor }, {
+export const updateAsignatura = (id, profesor) => {
+	return apiClient.put('/asignatura', { asignProfId: id, profesor }, {
 		headers: {
 			...getHeaders(),
 		}

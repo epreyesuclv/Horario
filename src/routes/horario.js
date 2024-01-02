@@ -26,8 +26,7 @@ router.get('/carreras', async (req, res) => {
 
 router.get('/getAsignaturaByCarrera', async (req, res) => {
 	const { semestre, anno, carrera } = req.query
-	
-	console.log(req.query)
+
 	const allAsignaturas = await Asignatura.findAll({
 		include: [{
 			model: AsignProfCurso,
@@ -52,5 +51,11 @@ router.get('/getAsignaturaByCarrera', async (req, res) => {
 	res.json(allAsignaturas)
 })
 
+router.put('/asignatura', async (req, res) => {
+	const { asignProfId, profesor } = req.body
+	console.log(req.body)
+	const asignatura = await AsignProfCurso.update({ profesorId: profesor }, { where: { id: asignProfId } })
+	res.json(asignatura)
+})
 
 module.exports = router

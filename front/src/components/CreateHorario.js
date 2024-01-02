@@ -1,6 +1,6 @@
 import { Divider, FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select, Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, changeNameAsignatura, updateAsignatura } from '../apiconn/data'
+import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura } from '../apiconn/data'
 import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
 import { GridInput } from './GridInput'
 
@@ -15,7 +15,7 @@ export function CreateHorario() {
 		startDate: new Date()
 	})
 	const [carreras, setCarreras] = useState([])
-	const [asignaturas, setAsignaturas] = useState([{ nombre: "Matematica", frecuency: 0, editable: false, profesor: "dasf" }])
+	const [asignaturas, setAsignaturas] = useState([])
 	const [profesores, setProfesores] = useState([])
 	const [addNew, setAddNew] = useState(false)
 	const [newAsignatura, setNewAsignatura] = useState("")
@@ -27,7 +27,13 @@ export function CreateHorario() {
 
 		if (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "") {
 			const data = await getAllAsignaturasBy(formData.anno, formData.semestre, formData.carrera)
-			setAsignaturas(data.data)
+			setAsignaturas(data.data.map(value => ({
+				nombre: value.nombre,
+				frecuency: 0,
+				editable: false,
+				profesor: value.asignProfCursos[0].profesorId,
+				...value
+			})))
 		}
 
 	}, [formData])
@@ -60,22 +66,24 @@ export function CreateHorario() {
 		fetchAsignaturas()
 	}, [fetchAsignaturas])
 
+	// handlers
 	const handleEdit = (id) => () => {
 		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
 		if (!asignatura.editable) {
 			asignatura.editable = true
 			setAsignaturas([...asignaturas])
 		} else {
+			console.log(asignatura)
 			asignatura.editable = false
-			updateAsignatura(asignatura.id, asignatura.nombre, asignatura.profesor)
+			updateAsignatura(asignatura.asignProfCursos[0].id, asignatura.profesor)
 			setAsignaturas([...asignaturas])
 		}
 	}
 
 	const handleDelete = (id) => () => {
 		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
-		if (asignatura.asignProfCurso) {
-			deleteAsignatura(asignatura.asignProfCurso.map(asignProfCurso => asignProfCurso.id))
+		if (asignatura.asignProfCursos) {
+			deleteAsignatura(asignatura.asignProfCursos.map(asignProfCurso => asignProfCurso.id))
 			setRefresh(true)
 		}
 	}
@@ -121,9 +129,15 @@ export function CreateHorario() {
 	}
 
 	const handleCreate = () => {
-
+		
 	}
 
+	const handleDeleteNew = () => {
+		setNewAsignatura("")
+		setNewFrecuency("")
+		setNewProfesor("")
+		setAddNew("")
+	}
 	return (
 		<div className="container-fluid">
 			<form>
@@ -277,9 +291,22 @@ export function CreateHorario() {
 								</ListItem>
 							))
 							}
-							<ListItem key={'new'} sx={{ justifyContent: 'center' }}>
+							<ListItem
+								secondaryAction={
+									addNew ? <div>
+										<IconButton onClick={handleCreate} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
+											<Save></Save>
+										</IconButton>
+										<IconButton onClick={handleDeleteNew} edge="end" aria-label="delete">
+											<Delete />
+										</IconButton>
+									</div> : null
+
+								}
+								key={'new'}
+								sx={{ justifyContent: 'center' }}>
 								{addNew ?
-									<Grid container spacing={3}>
+									<Grid container item xs={12} spacing={3}>
 										<GridInput
 											label='Asignatura'
 											type="number"
