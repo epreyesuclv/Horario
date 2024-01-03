@@ -1,6 +1,6 @@
 import { Divider, FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select, Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura } from '../apiconn/data'
+import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura, createNewAsignaturaForCurso } from '../apiconn/data'
 import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
 import { GridInput } from './GridInput'
 
@@ -29,7 +29,7 @@ export function CreateHorario() {
 			const data = await getAllAsignaturasBy(formData.anno, formData.semestre, formData.carrera)
 			setAsignaturas(data.data.map(value => ({
 				nombre: value.nombre,
-				frecuency: 0,
+				frecuency: value.asignProfCursos[0].frecuency,
 				editable: false,
 				profesor: value.asignProfCursos[0].profesorId,
 				...value
@@ -40,7 +40,7 @@ export function CreateHorario() {
 
 
 	useEffect(() => {
-		async function fetch(params) {
+		async function fetch() {
 			const data = await getAllProfesors()
 			setProfesores(data.data)
 		}
@@ -75,7 +75,7 @@ export function CreateHorario() {
 		} else {
 			console.log(asignatura)
 			asignatura.editable = false
-			updateAsignatura(asignatura.asignProfCursos[0].id, asignatura.profesor)
+			updateAsignatura(asignatura.asignProfCursos[0].id, asignatura.profesor, asignatura.frecuency)
 			setAsignaturas([...asignaturas])
 		}
 	}
@@ -129,7 +129,8 @@ export function CreateHorario() {
 	}
 
 	const handleCreate = () => {
-		
+		console.log("newAsignatura", newAsignatura)
+		createNewAsignaturaForCurso(newAsignatura, newProfesor, newFrecuency, formData).then(setRefresh(true))
 	}
 
 	const handleDeleteNew = () => {
@@ -259,11 +260,11 @@ export function CreateHorario() {
 										<GridInput
 											disabled={!value.editable}
 											label='Horas Clase'
-											xs={4}
+											xs={3}
 											value={value.frecuency}
 											onChange={handleOnChangeFrecuency(value.id)}>
 										</GridInput>
-										<Grid item xs={4}>
+										<Grid item xs={3}>
 											<FormControl fullWidth>
 												<InputLabel id={'id-profesor-' + value.id}>Profesor</InputLabel>
 												<Select
@@ -309,35 +310,38 @@ export function CreateHorario() {
 									<Grid container item xs={12} spacing={3}>
 										<GridInput
 											label='Asignatura'
-											type="number"
-											xs={4}
+											type="text"
+											xs={3}
 											value={newAsignatura}
 											onChange={handleOnChangeNameNew}>
 										</GridInput>
 										<GridInput
 											label='Horas Clase'
-											xs={4}
+											xs={3}
 											value={newFrecuency}
 											onChange={handleOnChangeFrecuencyNew}>
 										</GridInput>
-										<Grid item xs={4}>
-											<Select
-												value={newProfesor}
-												onChange={handleOnChangeProfesorNew}>
-												{
-													profesores.map(value => {
-														return (
-															<MenuItem key={value.id} value={value.id}>
-																{value.nombre}
-															</MenuItem>
-														)
-													})
-												}
-											</Select>
+										<Grid item xs={3}>
+											<FormControl fullWidth>
+												<InputLabel id={'id-profesor-new'}>Profesor</InputLabel>
+												<Select
+													label='Profesor'
+													placeholder='Profesor'
+													autoWidth
+													value={newProfesor}
+													onChange={handleOnChangeProfesorNew}>
+													{
+														profesores.map(value => {
+															return (
+																<MenuItem key={value.id} value={value.id}>
+																	{value.nombre}
+																</MenuItem>
+															)
+														})
+													}
+												</Select>
+											</FormControl>
 										</Grid>
-										<IconButton onClick={handleCreate} >
-											<Save></Save>
-										</IconButton>
 									</Grid> :
 									<IconButton onClick={() => setAddNew(true)} edge="end" aria-label="delete">
 										<AddCircleOutline />

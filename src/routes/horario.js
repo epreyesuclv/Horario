@@ -1,4 +1,4 @@
-const { Horario, Asignatura, AsignProfCurso, Curso, Carrera } = require('../models')
+const { Horario, Profesor, Asignatura, AsignProfCurso, Curso, Carrera } = require('../models')
 // const { authentication } = require('../middleware/auth')
 const express = require('express')
 const router = express.Router()
@@ -48,14 +48,31 @@ router.get('/getAsignaturaByCarrera', async (req, res) => {
 			}]
 		}]
 	})
-	res.json(allAsignaturas)
+
+	res.json(allAsignaturas.filter(value => value.asignProfCursos.length))
 })
 
 router.put('/asignatura', async (req, res) => {
-	const { asignProfId, profesor } = req.body
+	const { asignProfId, profesor, frecuency } = req.body
 	console.log(req.body)
-	const asignatura = await AsignProfCurso.update({ profesorId: profesor }, { where: { id: asignProfId } })
+	const asignatura = await AsignProfCurso.update({ profesorId: profesor, frecuency }, { where: { id: asignProfId } })
 	res.json(asignatura)
+})
+
+router.post('/asignatura', async (req, res) => {
+	const { asignName, profesorId, carrera, anno, frecuency, semestre } = req.body
+	console.log(req.body)
+
+	let curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
+	if (!curso)
+		curso = await Curso.create({ carreraId: carrera, anno, semestre })
+
+	let asignatura = await Asignatura.findOne({ where: { nombre: asignName } })
+	if (!asignatura)
+		asignatura = await Asignatura.create({ nombre: asignName })
+
+	const asignProfCourso = await AsignProfCurso.create({ profesorId, asignaturaId: asignatura.id, cursoId: curso.id, frecuency })
+	res.json(asignProfCourso)
 })
 
 module.exports = router
