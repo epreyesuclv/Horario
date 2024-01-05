@@ -1,15 +1,4 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(120deg, #AF601A, #F1948A);
-    color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
+
   .container {
     background-color: rgba(255, 255, 255, 0.7);
     padding: 40px;

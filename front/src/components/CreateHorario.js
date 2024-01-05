@@ -131,6 +131,7 @@ export function CreateHorario() {
 	const handleCreate = () => {
 		console.log("newAsignatura", newAsignatura)
 		createNewAsignaturaForCurso(newAsignatura, newProfesor, newFrecuency, formData).then(setRefresh(true))
+		handleDeleteNew()
 	}
 
 	const handleDeleteNew = () => {
@@ -351,6 +352,9 @@ export function CreateHorario() {
 					</Grid>
 				</Grid>
 			</form>
+			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
+				<a href="/home" class="btn btn-secondary">Regresar al Login</a>
+			</div>
 		</div >
 	)
 }

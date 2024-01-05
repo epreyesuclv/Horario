@@ -61,7 +61,7 @@ export const deleteAsignatura = (ids) => {
 
 
 export const updateAsignatura = (id, profesor, frecuency) => {
-	return apiClient.put('/asignatura', { asignProfId: id, profesor,frecuency }, {
+	return apiClient.put('/asignatura', { asignProfId: id, profesor, frecuency }, {
 		headers: {
 			...getHeaders(),
 		}
@@ -70,6 +70,12 @@ export const updateAsignatura = (id, profesor, frecuency) => {
 
 export const createNewAsignaturaForCurso = (asignName, profesorId, frecuency, { carrera, anno, semestre }) => {
 	return apiClient.post('/asignatura', { asignName, profesorId, frecuency, carrera, anno, semestre }, {
+
+	})
+}
+
+export const addusuario = (nombre, password, role) => {
+	return apiClient.post('/user', { nombre, password, role }, {
 		headers: {
 			...getHeaders(),
 		}
