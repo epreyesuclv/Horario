@@ -1,6 +1,6 @@
-import { Divider, FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select, Typography } from '@mui/material'
+import { Button, Divider, FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select, Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura, createNewAsignaturaForCurso } from '../apiconn/data'
+import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura, createNewAsignaturaForCurso, createHorario } from '../apiconn/data'
 import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
 import { GridInput } from './GridInput'
 
@@ -11,6 +11,7 @@ export function CreateHorario() {
 		carrera: "",
 		anno: "",
 		semestre: "",
+		time: "",
 		semanas: "",
 		startDate: new Date()
 	})
@@ -140,6 +141,13 @@ export function CreateHorario() {
 		setNewProfesor("")
 		setAddNew("")
 	}
+
+	const handleGenerateHorario = () => {
+		createHorario(formData).then(value => {
+			window.location.href = '/revisar_horario/' + value.data.horario
+		})
+	}
+
 	return (
 		<div className="container-fluid">
 			<form>
@@ -177,6 +185,27 @@ export function CreateHorario() {
 								value={formData.anno}
 							>{
 									[1, 2, 3, 4, 5].map(value => (<MenuItem key={value} value={value}>
+										{value}
+									</MenuItem>))
+								}
+
+							</Select>
+						</FormControl>
+
+					</Grid>
+					<Grid item xs={6}>
+						<FormControl fullWidth>
+							<InputLabel id="time-selector">Horario</InputLabel>
+							<Select
+								id="time-selector"
+								required
+								fullWidth
+								onChange={handleChange('time')}
+								label="Horario"
+								placeholder='Horario'
+								value={formData.time}
+							>{
+									['Mañana', 'Tarde'].map(value => (<MenuItem key={value} value={value}>
 										{value}
 									</MenuItem>))
 								}
@@ -344,16 +373,19 @@ export function CreateHorario() {
 											</FormControl>
 										</Grid>
 									</Grid> :
-									<IconButton onClick={() => setAddNew(true)} edge="end" aria-label="delete">
+									<IconButton hidden={!formData.anno || !formData.carrera || !formData.semestre} onClick={() => setAddNew(true)} edge="end" aria-label="delete">
 										<AddCircleOutline />
 									</IconButton>}
+							</ListItem>
+							<ListItem hidden={!formData.anno || !formData.carrera || !formData.semestre} sx={{ justifyContent: 'center' }}>
+								<Button disabled={!formData.anno || !formData.carrera || !formData.semestre || !formData.semanas > 0} onClick={handleGenerateHorario} sx={{ margin: "20px" }}>Generar Horario</Button>
 							</ListItem>
 						</List>
 					</Grid>
 				</Grid>
 			</form>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
-				<a href="/home" class="btn btn-secondary">Regresar al Login</a>
+				<a href="/home" class="btn btn-secondary">Regresar al Home</a>
 			</div>
 		</div >
 	)

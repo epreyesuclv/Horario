@@ -74,8 +74,48 @@ export const createNewAsignaturaForCurso = (asignName, profesorId, frecuency, { 
 	})
 }
 
-export const addusuario = (nombre, password, role) => {
-	return apiClient.post('/user', { nombre, password, role }, {
+export const addusuario = (username, password, role) => {
+
+	return apiClient.post('/user', { username, password, role }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const getAllusuarios = () => {
+	return apiClient.get('/user', {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const updateusuario = (id, username, password, role) => {
+	return apiClient.put('/user', { id, username, password, role }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const deleteusuario = (id) => {
+	return apiClient.delete('/user/' + id, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+export const createHorario = (formData) => {
+	console.log(formData)
+	return apiClient.post('/horario', { ...formData }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+export const getHorarioById = (id) => {
+	return apiClient.get('/horario/' + id, {
 		headers: {
 			...getHeaders(),
 		}

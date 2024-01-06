@@ -102,7 +102,7 @@ export function Profesor() {
 				</ListItem>
 			</List>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
-				<a href="/home" class="btn btn-secondary">Regresar al Login</a>
+				<a href="/home" class="btn btn-secondary">Regresar al Home</a>
 			</div>
 		</div>)
 }

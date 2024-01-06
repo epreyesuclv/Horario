@@ -1,22 +1,106 @@
+const { fill, openSchedule, checkallHour } = require('../controllers/horario')
 const { Horario, Profesor, Asignatura, AsignProfCurso, Curso, Carrera } = require('../models')
 // const { authentication } = require('../middleware/auth')
 const express = require('express')
 const router = express.Router()
 
 // router.use(authentiecation)
-router.post('/horario', async (req, res) => {
-	const { } = req.body
+/**
+ * const horarioData = {
+	amountSemanas: 3,
+	fechaInicio: moment(),
+	asignaturas: [{ id: 1, nombre: "Programacion", frecuency: 32 }, { id: 2, nombre: "Matematica", frecuency: 32 }, { id: 3, nombre: "Fisisca", frecuency: 32 }],
+	horario: [{
+		num: 1,
+		semana: [
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"]
+		]
+	},
+	{
+		num: 2,
+		semana: [
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"]
+		]
+	},
+	{
+		num: 3,
+		semana: [
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"],
+			[2, 2, 1, 3, "-", "-"]
+		]
+	}]
+}
+ */
 
-	//
-	const horario = {}
-	if (horario)
-		res.status(200).json({
-			message: 'OK'
-		})
-	else
-		res.status(401).json({
-			message: 'Unauthorized'
-		})
+
+router.post('/horario', async (req, res) => {
+	const { semestre, anno, startDate, carrera, time, semanas } = req.body
+	console.log(req.body)
+
+	const curso = await Curso.findOne({
+		where: {
+			semestre,
+			anno,
+			carreraId: carrera
+		},
+		include: [{ model: AsignProfCurso, include: Asignatura }]
+	})
+	const asignaturas = curso.asignProfCursos
+	//{ id: 3, nombre: "Fisisca", frecuency: 32 }]
+	const horario = {
+		amountSemanas: Number(semanas),
+		fechaInicio: startDate,
+		asignaturas: asignaturas.map(value => ({ id: value.asignatura.id, nombre: value.asignatura.nombre, frecuency: value.frecuency })),
+		horario: []
+	}
+	const arrayFrecuency = []
+
+	for (let i = 0; i < horario.asignaturas.length; i++) {
+		const asignatura = horario.asignaturas[i]
+		arrayFrecuency[asignatura.id] = Number(asignatura.frecuency) / 2
+	}
+
+	for (let i = 0; i < horario.amountSemanas; i++) {
+
+		const data = {
+			num: i + 1,
+			semana: [
+				["-", "-", "-", "-", "-", "-"],
+				["-", "-", "-", "-", "-", "-"],
+				["-", "-", "-", "-", "-", "-"],
+				["-", "-", "-", "-", "-", "-"],
+				["-", "-", "-", "-", "-", "-"],
+			]
+		}
+		let breaker = true
+		while (breaker && checkallHour(arrayFrecuency))
+			for (let j = 0; j < horario.asignaturas.length; j++) {
+				if (arrayFrecuency[horario.asignaturas[j].id] > 0) {
+					arrayFrecuency[horario.asignaturas[j].id]--
+					breaker = fill(data.semana, horario.asignaturas[j], time)
+				}
+			}
+		console.log(data)
+		horario.horario.push(data)
+	}
+
+	const newHOrario = await Horario.create({
+		cursoId: curso.id,
+		code: "Cruso" + horario.fechaInicio,
+		info: JSON.stringify(horario)
+	})
+	res.status(200).json({ horario: newHOrario.id })
 })
 
 router.get('/carreras', async (req, res) => {
@@ -52,6 +136,12 @@ router.get('/getAsignaturaByCarrera', async (req, res) => {
 	res.json(allAsignaturas.filter(value => value.asignProfCursos.length))
 })
 
+router.get('/horario/:id', async (req, res) => {
+	const { id } = req.params
+	const horario = await Horario.findOne({ where: { id } })
+	res.json(JSON.parse(horario.info))
+})
+
 router.put('/asignatura', async (req, res) => {
 	const { asignProfId, profesor, frecuency } = req.body
 	console.log(req.body)
@@ -73,6 +163,12 @@ router.post('/asignatura', async (req, res) => {
 
 	const asignProfCourso = await AsignProfCurso.create({ profesorId, asignaturaId: asignatura.id, cursoId: curso.id, frecuency })
 	res.json(asignProfCourso)
+})
+
+router.post('/asignaProfCurso/deleteBulk', async (req, res) => {
+	const { ids } = req.body
+	console.log(req.body)
+	res.json(await AsignProfCurso.destroy({ where: { id: ids } }))
 })
 
 module.exports = router

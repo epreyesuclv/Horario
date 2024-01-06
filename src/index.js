@@ -19,6 +19,7 @@ var corsOptions = {
 const loginRoute = require("./routes/login");
 const profesorRoute = require("./routes/profesor")
 const horarioRoute = require("./routes/horario")
+const userRoute = require("./routes/user")
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
@@ -30,6 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(loginRoute)
 app.use(profesorRoute)
 app.use(horarioRoute)
+app.use(userRoute)
 // simple route
 app.get("/", (req, res) => {
 	res.json({ message: "Welcome to bezkoder application." });

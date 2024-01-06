@@ -12,6 +12,7 @@ import { Logout } from './components/Logout';
 import { Profesor } from './components/Profesor';
 import { CreateHorario } from './components/CreateHorario';
 import { CheckHorario } from './components/CheckHorario';
+import { Usuario } from './components/Usuario';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -27,11 +28,10 @@ root.render(
         <Route path='/agregar_profesor' element={<Profesor></Profesor>}></Route>
         <Route path='/agregar_usuario' element={<Usuario></Usuario>}></Route>
         <Route path='/hacer_horario' element={<CreateHorario></CreateHorario>}></Route>
-        <Route path='/revisar_horario' element={<CheckHorario></CheckHorario>}></Route>
-
-      <Route path='/'></Route>
-    </Routes>
-  </BrowserRouter>
+        <Route path='/revisar_horario/:id' element={<CheckHorario></CheckHorario>}></Route>
+        <Route path='/'></Route>
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode >
 );
 

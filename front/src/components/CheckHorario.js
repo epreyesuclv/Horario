@@ -1,12 +1,14 @@
 import { Container, Grid, Pagination, ToggleButton, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GridSelect } from "./GridSelect";
 import moment from 'moment'
 import '../styles/revisar_horario_style.css'
 import { GridInput } from "./GridInput";
+import { useParams } from "react-router-dom";
+import { getHorarioById } from "../apiconn/data";
 const horarioData = {
 	amountSemanas: 3,
-	fechaInicio: moment("20/3/2024"),
+	fechaInicio: moment(),
 	asignaturas: [{ id: 1, nombre: "Programacion", frecuency: 32 }, { id: 2, nombre: "Matematica", frecuency: 32 }, { id: 3, nombre: "Fisisca", frecuency: 32 }],
 	horario: [{
 		num: 1,
@@ -40,11 +42,21 @@ const horarioData = {
 	}]
 }
 export function CheckHorario() {
+	const params = useParams()
+	console.log(params)
 	const [page, setPage] = useState(1)
 	const [horario, setHorario] = useState(horarioData)
 	const changePage = (event, value) => {
 		setPage(value)
 	}
+
+	useEffect(() => {
+		async function fetch() {
+			const data = await getHorarioById(params.id)
+			setHorario(data.data)
+		}
+		fetch()
+	}, [params])
 	const onChangeAsign = (semana, turno) => (value) => {
 		console.log("value", value)
 		setHorario(oldHorario => {
@@ -78,9 +90,12 @@ export function CheckHorario() {
 	console.log(page, semana)
 	const optionsAsignaturas = horario.asignaturas.map(value => value.id)
 	optionsAsignaturas.push("-")
+	const cloneFecha = moment(horario.fechaInicio).clone()
+	const fechaInSemana = cloneFecha.add(page - 1, 'weeks').format("YYYY-MM-DD")
+	const fechaFinSemana = cloneFecha.add(5, 'days').format("YYYY-MM-DD")
 	return (
 		<Grid margin={"30px"} container spacing={3}>
-			<Grid item xs={12}><Typography></Typography></Grid>
+			<Grid item xs={12}><Typography marginLeft={"50px"}>{fechaInSemana + " - " + fechaFinSemana}</Typography></Grid>
 			<Grid item xs={12}>
 				{semana && (
 					<Container >
@@ -127,7 +142,7 @@ export function CheckHorario() {
 			<Grid item xs={3}><ToggleButton onChange={onChangeVetoBool} selected={!!semanaData.veto} >{semanaData.veto ? "Semana sin clases" : "Hacer esta semana sin clases"}</ToggleButton></Grid>
 			{semanaData.veto ? <GridInput xs={3} onChange={onChangeVeto} label="Descripcion" value={semanaData.vetoDescription} ></GridInput> : null}
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
-				<a href="/home" class="btn btn-secondary">Regresar al Login</a>
+				<a href="/home" class="btn btn-secondary">Regresar al Home</a>
 			</div>
 		</Grid >
 	)

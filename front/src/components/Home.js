@@ -14,7 +14,7 @@ export function Home() {
 	return (
 		<div style={{ width: "100%" }} class="backgroundOrange">
 			<div class="container">
-				<h1 class="text-center pt-5 mb-4">Menu Principal</h1>
+				<h1 style={{ color: "white" }} class="text-center pt-5 mb-4">Menu Principal</h1>
 				<div class="row mb-4">
 					<div class="col-md-6">
 						<div class="card h-100 shadow bg-transparent">
@@ -46,13 +46,10 @@ export function Home() {
 							</div>
 						</div>
 					</div>
-				</div>
-
-				<div class="row">
 					<div class="col-md-6">
 						<div class="card h-100 shadow bg-transparent">
 							<div class="card-body text-white">
-								<h5 class="card-title">Usurario</h5>
+								<h5 class="card-title">Usuario</h5>
 								<p class="card-text">Ver y agregar nuevos usuarios</p>
 								<a href="/agregar_usuario" class="btn btn-primary btn-block">Ir</a>
 							</div>
