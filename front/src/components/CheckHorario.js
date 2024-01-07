@@ -6,46 +6,46 @@ import '../styles/revisar_horario_style.css'
 import { GridInput } from "./GridInput";
 import { useParams } from "react-router-dom";
 import { getHorarioById } from "../apiconn/data";
-const horarioData = {
-	amountSemanas: 3,
-	fechaInicio: moment(),
-	asignaturas: [{ id: 1, nombre: "Programacion", frecuency: 32 }, { id: 2, nombre: "Matematica", frecuency: 32 }, { id: 3, nombre: "Fisisca", frecuency: 32 }],
-	horario: [{
-		num: 1,
-		semana: [
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"]
-		]
-	},
-	{
-		num: 2,
-		semana: [
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"]
-		]
-	},
-	{
-		num: 3,
-		semana: [
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"],
-			[2, 2, 1, 3, "-", "-"]
-		]
-	}]
-}
+// const horarioData = {
+// 	amountSemanas: 3,
+// 	fechaInicio: moment(),
+// 	asignaturas: [{ id: 1, nombre: "Programacion", frecuency: 32 }, { id: 2, nombre: "Matematica", frecuency: 32 }, { id: 3, nombre: "Fisisca", frecuency: 32 }],
+// 	horario: [{
+// 		num: 1,
+// 		semana: [
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"]
+// 		]
+// 	},
+// 	{
+// 		num: 2,
+// 		semana: [
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"]
+// 		]
+// 	},
+// 	{
+// 		num: 3,
+// 		semana: [
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"],
+// 			[2, 2, 1, 3, "-", "-"]
+// 		]
+// 	}]
+// }
 export function CheckHorario() {
 	const params = useParams()
 	console.log(params)
 	const [page, setPage] = useState(1)
-	const [horario, setHorario] = useState(horarioData)
+	const [horario, setHorario] = useState()
 	const changePage = (event, value) => {
 		setPage(value)
 	}

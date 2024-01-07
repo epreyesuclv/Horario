@@ -15,6 +15,7 @@ export function Login() {
 		login(email, password).then(value => {
 			Cookie.set('username', email)
 			Cookie.set('password', password)
+			Cookie.set('role', value.data.role)
 			navigate("/home")
 		}).catch(err => {
 			setError(true)

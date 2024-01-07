@@ -8,7 +8,12 @@ import { GridInput } from "./GridInput";
 import moment from "moment";
 import JsxParser from 'react-jsx-parser'
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
+import jsCookie from "js-cookie";
 
+const getRoleCookie = () => {
+	console.log(jsCookie.get('role'))
+	return jsCookie.get('role')
+}
 export function ListHorario() {
 	// states
 	const [horarios, setHorarios] = useState([])
@@ -104,13 +109,13 @@ export function ListHorario() {
 						key={value.id}
 						secondaryAction={
 							<div>
-								<IconButton onClick={handleEdit(value.id)} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
+								{getRoleCookie() !== 'Profesor' && <IconButton onClick={handleEdit(value.id)} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
 									<Edit />
-								</IconButton>
+								</IconButton>}
 								<IconButton onClick={handleDownload(value.id)}> <Save> </Save></IconButton>
-								<IconButton onClick={handleDelete(value.id)} edge="end" aria-label="delete">
+								{getRoleCookie() !== 'Profesor' && <IconButton onClick={handleDelete(value.id)} edge="end" aria-label="delete">
 									<Delete />
-								</IconButton >
+								</IconButton >}
 							</div>
 
 						}
