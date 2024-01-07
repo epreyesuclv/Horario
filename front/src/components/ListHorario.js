@@ -58,7 +58,7 @@ export function ListHorario() {
 		const semestre = horarioData.curso.semestre
 		const anno = horarioData.curso.anno
 		// horario to table
-		let htmlToAdd = '<table id="table-id"><tbody><th> Carrera: ' + carrera + "</th><th> Año: " + anno + "</th><th> Semestre: " + semestre + "</th>"
+		let htmlToAdd = '<table id="table-id"><th> Carrera: ' + carrera + "</th><th> Año: " + anno + "</th><th> Semestre: " + semestre + "</th>"
 		// console.log(htmlToAdd)
 		const weeksDays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
 		const info = JSON.parse(horarioData.info)
@@ -66,22 +66,24 @@ export function ListHorario() {
 		info.horario.forEach((valueCurrent, index) => {
 			const fechaInSemana = cloneFecha.clone().add(valueCurrent.num, 'weeks').format("YYYY-MM-DD")
 			const fechaFinSemana = cloneFecha.clone().add(5, 'days').format("YYYY-MM-DD")
-			htmlToAdd += '<th>semana ' + (index + 1) + '</th>' + '<th> Fecha de Inicio: </th>' + '<th>' + fechaInSemana + '</th>' + '<th> Fecha de fin: </th>' + '<th>' + fechaFinSemana + '</th> <th> ' + valueCurrent.veto ? " Semana sin clases: "+valueCurrent.vetoDescription : "" + '</th>'
+			htmlToAdd += '<tr></tr><th>semana ' + (index + 1) + '</th>' + '<th> Fecha de Inicio: </th>' + '<th>' + fechaInSemana + '</th>' + '<th> Fecha de fin: </th>' + '<th>' + fechaFinSemana + '</th> '
+			if (valueCurrent.veto)
+				htmlToAdd += '<tr><td> Semana sin clase </td>' + '<td>' + valueCurrent.vetoDescription + '</td></tr>'
+			else
+				for (let i = -1; i < 6; i++) {
 
-			for (let i = -1; i < 6; i++) {
+					if (i === 3)
+						htmlToAdd += '<tr><td>Tarde</td></tr>'
+					htmlToAdd += '<tr>'
+					for (let j = 0; j < 5; j++) {
+						if (i === -1)
+							htmlToAdd += '<td>' + weeksDays[j] + '</td>'
+						else
+							htmlToAdd += '<td>' + valueCurrent.semana[j][i] + '</td>'
+					}
 
-				if (i === 3)
-					htmlToAdd += '<tr><td>Tarde</td></tr>'
-				htmlToAdd += '<tr>'
-				for (let j = 0; j < 5; j++) {
-					if (i === -1)
-						htmlToAdd += '<td>' + weeksDays[j] + '</td>'
-					else
-						htmlToAdd += '<td>' + valueCurrent.semana[j][i] + '</td>'
+					htmlToAdd += '</tr>'
 				}
-
-				htmlToAdd += '</tr>'
-			}
 
 		})
 		htmlToAdd += '<tr><td>Leyenda</td></tr>'
@@ -89,7 +91,7 @@ export function ListHorario() {
 		horarioData.curso.asignProfCursos.forEach(a => {
 			htmlToAdd += '<tr><td>' + a.asignaturaId + ' </td><td> ' + a.asignatura.nombre + '</td><td> ' + a.profesor.nombre + '</td><td> ' + a.frecuency + '</td></tr>'
 		})
-		htmlToAdd += '</tbody></table>'
+		htmlToAdd += '</table>'
 
 		// console.log(htmlToAdd)
 		// const table = document.createElement("table")

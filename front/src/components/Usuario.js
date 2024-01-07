@@ -132,14 +132,15 @@ export function Usuario() {
 				}
 				<ListItem sx={{ justifyContent: 'center' }}
 					secondaryAction={
-						<div>
-							<IconButton onClick={handleCreate} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
-								{<Save></Save>}
-							</IconButton>
-							<IconButton onClick={handleReset} edge="end" aria-label="delete">
-								<Delete />
-							</IconButton>
-						</div>
+						addNew ?
+							<div>
+								<IconButton onClick={handleCreate} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
+									{<Save></Save>}
+								</IconButton>
+								<IconButton onClick={handleReset} edge="end" aria-label="delete">
+									<Delete />
+								</IconButton>
+							</div> : null
 
 					}>
 					{addNew ?
