@@ -131,7 +131,7 @@ export function CreateHorario() {
 
 	const handleCreate = () => {
 		console.log("newAsignatura", newAsignatura)
-		createNewAsignaturaForCurso(newAsignatura, newProfesor, newFrecuency, formData).then(setRefresh(true))
+		createNewAsignaturaForCurso(newAsignatura, newProfesor, newFrecuency, formData).then(()=>setRefresh(true))
 		handleDeleteNew()
 	}
 

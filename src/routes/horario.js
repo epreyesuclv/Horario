@@ -97,7 +97,7 @@ router.post('/horario', async (req, res) => {
 
 	const newHOrario = await Horario.create({
 		cursoId: curso.id,
-		code: "Cruso" + horario.fechaInicio,
+		code: "Curso-" + horario.fechaInicio,
 		info: JSON.stringify(horario)
 	})
 	res.status(200).json({ horario: newHOrario.id })
