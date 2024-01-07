@@ -128,7 +128,7 @@ router.delete('/horario/:id', async (req, res) => {
 	const { id } = req.params
 	const horario = await Horario.findOne({ where: { id } })
 	await horario.destroy()
-	res.status(200).json(horario)
+	res.status(200).json(horario.info)
 })
 
 router.get('/carreras', async (req, res) => {
@@ -167,7 +167,7 @@ router.get('/getAsignaturaByCarrera', async (req, res) => {
 router.get('/horario/:id', async (req, res) => {
 	const { id } = req.params
 	const horario = await Horario.findOne({ where: { id } })
-	res.json(JSON.parse(horario.info))
+	res.json(horario.info)
 })
 
 router.put('/asignatura', async (req, res) => {

@@ -61,12 +61,12 @@ export function ListHorario() {
 		let htmlToAdd = '<table id="table-id"><tbody><th> Carrera: ' + carrera + "</th><th> Año: " + anno + "</th><th> Semestre: " + semestre + "</th>"
 		// console.log(htmlToAdd)
 		const weeksDays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
-		const info = JSON.parse(horarioData.info)
+		const info = horarioData.info
 		const cloneFecha = moment(horarioData.fechaInicio).clone()
 		info.horario.forEach((valueCurrent, index) => {
 			const fechaInSemana = cloneFecha.clone().add(valueCurrent.num, 'weeks').format("YYYY-MM-DD")
 			const fechaFinSemana = cloneFecha.clone().add(5, 'days').format("YYYY-MM-DD")
-			htmlToAdd += '<th>semana ' + (index + 1) + '</th>' + '<th> Fecha de Inicio: </th>' + '<th>' + fechaInSemana + '</th>' + '<th> Fecha de fin: </th>' + '<th>' + fechaFinSemana + '</th>'
+			htmlToAdd += '<th>semana ' + (index + 1) + '</th>' + '<th> Fecha de Inicio: </th>' + '<th>' + fechaInSemana + '</th>' + '<th> Fecha de fin: </th>' + '<th>' + fechaFinSemana + '</th> <th> ' + valueCurrent.veto ? " Semana sin clases: "+valueCurrent.vetoDescription : "" + '</th>'
 
 			for (let i = -1; i < 6; i++) {
 

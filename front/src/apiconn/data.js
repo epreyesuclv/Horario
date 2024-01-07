@@ -136,3 +136,11 @@ export const deleteHorario = (id) => {
 		}
 	})
 }
+
+export const saveHorario = (id, info) => {
+	return apiClient.put('/horario', { id, info }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
