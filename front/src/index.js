@@ -31,7 +31,7 @@ root.render(
         <Route path='/hacer_horario' element={<CreateHorario></CreateHorario>}></Route>
         <Route path='/list_horario' element={<ListHorario></ListHorario>}></Route>
         <Route path='/revisar_horario/:id' element={<CheckHorario></CheckHorario>}></Route>
-        <Route path='/'></Route>
+        <Route path='/' element={<Login></Login>}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode >
