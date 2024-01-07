@@ -103,7 +103,7 @@ export function CheckHorario() {
 							{
 								semana.map((iValue, iIndex) => {
 									return (
-										<Grid item container xs={2}>
+										<Grid item container spacing={1} xs={2}>
 											<Grid item xs={12}>{weeksDays[iIndex]}</Grid>
 											{iValue.map((jValue, jIndex) => {
 												return (
@@ -132,7 +132,7 @@ export function CheckHorario() {
 				{
 					horario.asignaturas.map(value => (
 						<Grid item container xs={12}>
-							<Typography>{`${value.id} => ${value.nombre} : ${value.frecuency * 2} horas clase`}</Typography>
+							<Typography>{`${value.id} => ${value.nombre} : ${value.frecuency} horas clase`}</Typography>
 						</Grid>
 
 					))

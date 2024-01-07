@@ -103,6 +103,34 @@ router.post('/horario', async (req, res) => {
 	res.status(200).json({ horario: newHOrario.id })
 })
 
+router.put('/horario', async (req, res) => {
+	const { id, info, code } = req.body
+	const horario = await Horario.findOne({ where: { id } })
+	await horario.update({ info, code })
+	res.status(200).json(horario)
+})
+
+router.get('/horario', async (req, res) => {
+	const horarios = await Horario.findAll({
+		include: [{
+			model: Curso,
+			include: [{
+				model: AsignProfCurso,
+				include: [Asignatura, Profesor]
+			}, Carrera]
+		}
+		]
+	})
+	res.status(200).json(horarios)
+})
+
+router.delete('/horario/:id', async (req, res) => {
+	const { id } = req.params
+	const horario = await Horario.findOne({ where: { id } })
+	await horario.destroy()
+	res.status(200).json(horario)
+})
+
 router.get('/carreras', async (req, res) => {
 	const carreras = await Carrera.findAll()
 	res.status(200).json(carreras)

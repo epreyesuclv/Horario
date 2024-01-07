@@ -121,3 +121,18 @@ export const getHorarioById = (id) => {
 		}
 	})
 }
+export const getAllHorarios = () => {
+	return apiClient.get('/horario', {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const deleteHorario = (id) => {
+	return apiClient.delete('/horario/' + id, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}

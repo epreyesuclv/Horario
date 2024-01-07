@@ -30,7 +30,7 @@ export function Home() {
 							<div class="card-body text-white">
 								<h5 class="card-title">Revisar Horario</h5>
 								<p class="card-text">Revisa y modifica los horarios existentes con comodidad.</p>
-								<a href="/revisar_horario" class="btn btn-primary btn-block">Ir</a>
+								<a href="/list_horario" class="btn btn-primary btn-block">Ir</a>
 							</div>
 						</div>
 					</div>
