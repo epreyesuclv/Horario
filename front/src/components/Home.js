@@ -43,7 +43,7 @@ export function Home() {
 				</div>
 				<div class="row">
 					{
-						getRoleCookie() === "Administrador" && <div class="col-md-6">
+						getRoleCookie() !== "Profesor" && <div class="col-md-6">
 							<div class="card h-100 shadow bg-transparent">
 								<div class="card-body text-white">
 									<h5 class="card-title">Profesores</h5>
