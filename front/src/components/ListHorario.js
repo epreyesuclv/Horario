@@ -136,12 +136,12 @@ export function ListHorario() {
 					</ListItem>
 				))
 				}
-				<ListItem sx={{ justifyContent: 'center' }}>
+				{getRoleCookie() !== 'Profesor' && <ListItem sx={{ justifyContent: 'center' }}>
 
 					<IconButton onClick={handleCreate} edge="end" aria-label="delete">
 						<AddIcon />
 					</IconButton>
-				</ListItem>
+				</ListItem>}
 			</List>
 			{showDownloadButton && <ReactHTMLTableToExcel
 
