@@ -43,6 +43,7 @@ export function CheckHorario() {
 	useEffect(() => {
 		async function fetch() {
 			const data = await getHorarioById(params.id)
+			console.log(data)
 			if (typeof data.data === 'string') setHorario(JSON.parse(data.data))
 			else setHorario(data.data)
 

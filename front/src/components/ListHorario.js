@@ -61,7 +61,11 @@ export function ListHorario() {
 		let htmlToAdd = '<table id="table-id"><th> Carrera: ' + carrera + "</th><th> Año: " + anno + "</th><th> Semestre: " + semestre + "</th>"
 		// console.log(htmlToAdd)
 		const weeksDays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
-		const info = JSON.parse(horarioData.info)
+		let info
+		if (typeof horarioData.info === 'string')
+			info = JSON.parse(horarioData.info)
+		else info = horarioData.info
+		
 		const cloneFecha = moment(horarioData.fechaInicio).clone()
 		info.horario.forEach((valueCurrent, index) => {
 			const fechaInSemana = cloneFecha.clone().add(valueCurrent.num, 'weeks').format("YYYY-MM-DD")
