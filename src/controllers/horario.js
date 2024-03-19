@@ -11,7 +11,7 @@ const openSchedule = (semana) => {
 	}
 	return false
 }
-
+// esta funcion te inserta un turno en la semana disponible
 const fill = (matriz, asign, horario) => {
 	const EDUCACION_FISICA = "Educación Física"
 	let start = 0
@@ -23,6 +23,8 @@ const fill = (matriz, asign, horario) => {
 	}
 	// dada la semana la amtriz y la asignatura , buscar un lugar donde poner la asignatura en la matriz
 	for (let i = 0; i < 5; i++) {
+	
+		
 		for (let j = start; j < end; j++) {
 			if (matriz[i][j] === '-') {
 				matriz[i][j] = asign.id

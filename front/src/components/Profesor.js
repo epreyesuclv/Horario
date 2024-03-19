@@ -3,6 +3,7 @@ import { Delete, Edit, Save } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { addProfesor, deleteProfesor, getAllProfesors, updateProfesor } from "../apiconn/data";
 import AddIcon from '@mui/icons-material/Add';
+import LockIcon from '@mui/icons-material/Lock';
 
 export function Profesor() {
 	// states
@@ -54,6 +55,12 @@ export function Profesor() {
 		setNewProfesor("")
 	}
 
+	const handleRestriction = (id) => () => {
+		if(onclick===true){
+			console.log("prueba");
+		}
+	};
+
 	return (
 		<div className="container-fluid" style={{ maxWidth: "500px" }}>
 			<List dense={true}>
@@ -67,6 +74,9 @@ export function Profesor() {
 								</IconButton>
 								<IconButton onClick={handleDelete(value.id)} edge="end" aria-label="delete">
 									<Delete />
+								</IconButton>
+								<IconButton onclick={handleRestriction(value.id)} edge="end" aria-label="Restriction">
+									<LockIcon/>
 								</IconButton>
 							</div>
 
@@ -99,6 +109,11 @@ export function Profesor() {
 						<IconButton onClick={() => setAddNew(true)} edge="end" aria-label="delete">
 							<AddIcon />
 						</IconButton>}
+						<IconButton onClick={() =>handleRestriction} edge="end" aria-label="restriction">
+							<LockIcon>
+								
+							</LockIcon>	
+						</IconButton>		
 				</ListItem>
 			</List>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
