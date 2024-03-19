@@ -91,7 +91,7 @@ export function CheckHorario() {
 	const fechaInSemana = cloneFecha.add(page - 1, 'weeks').format("YYYY-MM-DD")
 	const fechaFinSemana = cloneFecha.add(5, 'days').format("YYYY-MM-DD")
 	return (
-		<Grid margin={"30px"} container spacing={3}>
+		<Grid style={{ maxWidth: "fit-content" }} margin={"30px"} container spacing={3}>
 			<Grid item xs={8}><Typography marginLeft={"50px"}>{fechaInSemana + " - " + fechaFinSemana}</Typography></Grid>
 
 			<Grid item xs={2}><Button onClick={handleSave} >{"Guardar Cambios"}</Button></Grid>

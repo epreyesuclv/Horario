@@ -27,6 +27,7 @@ root.render(
         <Route path='/login' element={<Login></Login>}></Route>
         <Route path='/logout' element={<Logout></Logout>}></Route>
         <Route path='/agregar_profesor' element={<Profesor></Profesor>}></Route>
+        <Route path='/restriccion_profesor/:id' element={<Profesor></Profesor>}></Route>
         <Route path='/agregar_usuario' element={<Usuario></Usuario>}></Route>
         <Route path='/hacer_horario' element={<CreateHorario></CreateHorario>}></Route>
         <Route path='/list_horario' element={<ListHorario></ListHorario>}></Route>

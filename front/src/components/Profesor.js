@@ -56,7 +56,7 @@ export function Profesor() {
 
 	return (
 		<div className="container-fluid" style={{ maxWidth: "500px" }}>
-			<List dense={true}>
+			<List dense>
 				{profesors.map((value) => (
 					<ListItem
 						key={value.id}
