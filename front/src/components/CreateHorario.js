@@ -5,7 +5,6 @@ import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
 import { GridInput } from './GridInput'
 import AddIcon from '@mui/icons-material/Add';
 
-
 export function CreateHorario() {
 
 	const [formData, setFormData] = useState({
@@ -41,12 +40,14 @@ export function CreateHorario() {
 				profesor: value.asignProfCursos[0].profesorId,
 				...value
 			})))
-			getAllEventsBy(formData.carrera, formData.anno)
+			// getAllEventsBy(formData.carrera, formData.anno)
 		}
 
 	}, [formData])
+	const handleDisableNextButton = () => {
 
-
+		return !(step === 0 && (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "" && formData.time !==""))
+	}
 	useEffect(() => {
 		async function fetch() {
 			const data = await getAllProfesors()
@@ -163,7 +164,7 @@ export function CreateHorario() {
 			</Grid>
 			<Grid item xs={6}>
 				<FormControl fullWidth>
-					<InputLabel id="anno-selector">Anno</InputLabel>
+					<InputLabel id="anno-selector">Año</InputLabel>
 					<Select
 						id="anno-selector"
 						required
@@ -277,7 +278,7 @@ export function CreateHorario() {
 					</FormControl>
 				</Grid>
 				<Grid item xs={12}>
-					<Typography variant='h4'>Eventos</Typography>
+					<Typography textAlign="center" variant='h4'>Eventos</Typography>
 					<List dense>
 						{formData.eventList.map(value => (
 							<ListItem
@@ -304,9 +305,16 @@ export function CreateHorario() {
 										value={newEvent?.date}
 									>
 									</Input>
+									<Input onChange={handleOnChangeNewEvent('date')} variant="body2"
+										primary="Single-line item"
+										type='date'
+										value={newEvent?.date}
+									>
+									</Input>
 									<IconButton onClick={handleCreateEvent} >
 										<Save></Save>
 									</IconButton>
+									< IconButton onClick={handleDeleteEvent}></IconButton>
 								</div> :
 								<IconButton onClick={() => setAddNewEvent(true)} edge="end" aria-label="delete">
 									<AddIcon />
@@ -464,10 +472,10 @@ export function CreateHorario() {
 			<div className='flex'>
 
 			</div>
-			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
-				<Button style={{ margin: "20px" }} variant='contained' onClick={previousStep} >previous</Button>
-				<a href="/home" class="btn btn-secondary">Regresar al Home</a>
-				<Button style={{ margin: "20px" }} variant='contained' onClick={nextStep}>next</Button>
+			<div class=" text-right mr-3 " style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
+				<Button style={{ margin: "20px", fontSize: "x-small" }} variant='contained' onClick={previousStep} >previous</Button>
+				<a href="/home" class=" btn btn-secondary">Regresar al Home</a>
+				<Button style={{ margin: "20px", fontSize: "x-small" }} variant='contained' onClick={nextStep} disabled={handleDisableNextButton()}>next</Button>
 
 			</div>
 		</div >
