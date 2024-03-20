@@ -1,32 +1,35 @@
 ;
 const express = require('express')
-const { Horario, Profesor, Asignatura, AsignProfCurso, Curso, Evento } = require('../models')
+const { Curso, Evento } = require('../models')
 const router = express.Router()
 
 router.get('/event', async (req, res) => {
-	const { } = req.params
-	let curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
-	if (!curso)
-		curso = await Curso.create({ carreraId: carrera, anno, semestre })
+	const { cursoId } = req.params
+	const events = await Evento.findAll({ where: { cursoId: cursoId } })
+	res.status(200).json(events)
 })
 
 router.post('/event', async (req, res) => {
 	console.log(req.body)
-	const { event, formData } = req.body
-	const { carrera, anno, semestre } = formData
-
-	let curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
-	if (!curso)
-		curso = await Curso.create({ carreraId: carrera, anno, semestre })
-
-	await Evento.create({ cursoId: curso.id, ...event })
+	const { event, cursoId } = req.body
+	await Evento.create({ cursoId, ...event })
 	res.status(200).json({ message: 'OK' })
 })
 
 router.delete('/event', async (req, res) => {
 	console.log(req.params)
 	const { id } = req.params
-
+	const evnt = await Evento.findByPk(id)
+	if (evnt) {
+		await evnt.destroy()
+		res.status(200).json({
+			message: 'OK'
+		})
+	}
+	else
+		res.status(402).json({
+			message: 'Not Found'
+		})
 	res.status(200).json({ message: 'OK' })
 })
 

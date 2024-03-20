@@ -181,9 +181,7 @@ router.post('/asignatura', async (req, res) => {
 	const { asignName, profesorId, carrera, anno, frecuency, semestre } = req.body
 	console.log(req.body)
 
-	let curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
-	if (!curso)
-		curso = await Curso.create({ carreraId: carrera, anno, semestre })
+	const curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
 
 	let asignatura = await Asignatura.findOne({ where: { nombre: asignName } })
 	if (!asignatura)

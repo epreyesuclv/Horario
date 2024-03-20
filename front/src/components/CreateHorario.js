@@ -41,7 +41,7 @@ export function CreateHorario() {
 				profesor: value.asignProfCursos[0].profesorId,
 				...value
 			})))
-			getAllEventsBy(formData.carrera, formData.anno)
+			// getAllEventsBy(formData.carrera, formData.anno)
 		}
 
 	}, [formData])
@@ -63,10 +63,6 @@ export function CreateHorario() {
 			setRefresh(false)
 		}
 	}, [fetchAsignaturas, refresh])
-
-	useEffect(() => {
-		fetchAsignaturas()
-	}, [fetchAsignaturas])
 
 	const handleEdit = (id) => () => {
 		const asignatura = asignaturas.find(asignatura => asignatura.id === id)

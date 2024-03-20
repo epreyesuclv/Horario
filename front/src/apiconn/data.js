@@ -158,3 +158,10 @@ export const deleteEvent = (event) => {
 		}
 	})
 }
+export const createCurso = (data) => {
+	return apiClient.post('/curso', data, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
