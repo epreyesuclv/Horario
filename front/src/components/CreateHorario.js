@@ -1,8 +1,9 @@
 import { Button, Divider, FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select, Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura, createNewAsignaturaForCurso, createHorario } from '../apiconn/data'
+import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura, createNewAsignaturaForCurso, createHorario, createEvent, deleteEvent } from '../apiconn/data'
 import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
 import { GridInput } from './GridInput'
+import AddIcon from '@mui/icons-material/Add';
 
 
 export function CreateHorario() {
@@ -25,7 +26,9 @@ export function CreateHorario() {
 	const [refresh, setRefresh] = useState(true)
 	const [newFrecuency, setNewFrecuency] = useState(0)
 	const [newProfesor, setNewProfesor] = useState("")
-	const [step, setStep] = useState(1)
+	const [step, setStep] = useState(0)
+	const [newEvent, setNewEvent] = useState()
+	const [addNewEvent, setAddNewEvent] = useState()
 
 	const fetchAsignaturas = useCallback(async () => {
 
@@ -38,6 +41,7 @@ export function CreateHorario() {
 				profesor: value.asignProfCursos[0].profesorId,
 				...value
 			})))
+			getAllEventsBy(formData.carrera, formData.anno)
 		}
 
 	}, [formData])
@@ -47,14 +51,8 @@ export function CreateHorario() {
 		async function fetch() {
 			const data = await getAllProfesors()
 			setProfesores(data.data)
-		}
-		fetch()
-	}, [])
-
-	useEffect(() => {
-		async function fetch() {
-			const data = await getCarreras()
-			setCarreras(data.data)
+			const data2 = await getCarreras()
+			setCarreras(data2.data)
 		}
 		fetch()
 	}, [])
@@ -70,7 +68,6 @@ export function CreateHorario() {
 		fetchAsignaturas()
 	}, [fetchAsignaturas])
 
-	// handlers
 	const handleEdit = (id) => () => {
 		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
 		if (!asignatura.editable) {
@@ -121,11 +118,9 @@ export function CreateHorario() {
 	}
 	const handleChange = (name) => (value) => {
 		setFormData(data => ({ ...data, [name]: value.target.value }))
-		console.log(formData)
 	}
 
 	const handleCreate = () => {
-		console.log("newAsignatura", newAsignatura)
 		createNewAsignaturaForCurso(newAsignatura, newProfesor, newFrecuency, formData).then(() => setRefresh(true))
 		handleDeleteNew()
 	}
@@ -143,9 +138,115 @@ export function CreateHorario() {
 		})
 	}
 
+	const step0 = () => {
+		return <Grid container spacing={3} my={"40px"}>
+			<Grid item xs={12} style={{ textAlign: "center" }}><Typography variant='h3'>Curso</Typography></Grid>
+			<Grid item xs={6}>
+				<FormControl fullWidth>
+					<InputLabel id="carrera-selector">Carrera</InputLabel>
+					<Select
+						id="carrera-selector"
+						required
+						fullWidth
+						label="Carrera"
+						onChange={handleChange('carrera')}
+						placeholder='Carrera'
+						value={formData.carrera}
+					>{
+							carreras.map(value => (<MenuItem key={value.id} value={value.id}>
+								{value.nombre}
+							</MenuItem>))
+						}
+
+					</Select>
+				</FormControl>
+			</Grid>
+			<Grid item xs={6}>
+				<FormControl fullWidth>
+					<InputLabel id="anno-selector">Anno</InputLabel>
+					<Select
+						id="anno-selector"
+						required
+						fullWidth
+						onChange={handleChange('anno')}
+						label="Anno"
+						placeholder='Anno'
+						value={formData.anno}
+					>{
+							[1, 2, 3, 4, 5].map(value => (<MenuItem key={value} value={value}>
+								{value}
+							</MenuItem>))
+						}
+
+					</Select>
+				</FormControl>
+
+			</Grid>
+			<Grid item xs={6}>
+				<FormControl fullWidth>
+					<InputLabel id="time-selector">Horario</InputLabel>
+					<Select
+						id="time-selector"
+						required
+						fullWidth
+						onChange={handleChange('time')}
+						label="Horario"
+						placeholder='Horario'
+						value={formData.time}
+					>{
+							['Mañana', 'Tarde'].map(value => (<MenuItem key={value} value={value}>
+								{value}
+							</MenuItem>))
+						}
+
+					</Select>
+				</FormControl>
+
+			</Grid>
+			<Grid item xs={6}>
+				<FormControl fullWidth>
+					<InputLabel id="semestre-selector">semestre</InputLabel>
+					<Select
+						id="semestre-selector"
+						required
+						onChange={handleChange('semestre')}
+						fullWidth
+						label="semestre"
+						placeholder='semestre'
+						value={formData.semestre}
+					>{
+							[1, 2].map(value => (<MenuItem key={value} value={value}>
+								{value}
+							</MenuItem>))
+						}
+
+					</Select>
+				</FormControl>
+			</Grid>
+			<Grid item xs={12}><Divider ></Divider></Grid>
+		</Grid>
+	}
+
+	const handleDeleteEvent = (id) => () => {
+		deleteEvent(id)
+	}
+
+	const handleOnChangeNewEvent = (name) => (e) => {
+		setNewEvent(value => ({ ...value, [name]: e.target.value }))
+	}
+
+	const handleCreateEvent = () => {
+		createEvent(newEvent, formData).then(value => {
+			setAddNewEvent(false)
+		})
+	}
+
 	const step1 = () => {
 		return <form style={{ marginRight: "30px", marginLeft: "30px" }}>
-			<Grid container spacing={8} my={"10px"}>
+			<Grid container spacing={5} my={"10px"}>
+				<Grid item xs={12}>
+					<Typography style={{ textAlign: 'center' }} variant='h3'>Configuración de Fechas</Typography>
+				</Grid>
 				<Grid item xs={6}>
 					<FormControl fullWidth>
 						<InputLabel id="startDate-semanas">Fecha inicio</InputLabel>
@@ -165,123 +266,63 @@ export function CreateHorario() {
 					<FormControl fullWidth>
 						<InputLabel id="finishDate-semanas">Fecha Fin</InputLabel>
 						<Input
-							id='startDate-semanas'
+							id='finishDate-semanas'
 							required
 							fullWidth
-							onChange={handleChange('startDate')}
+							onChange={handleChange('finishDate')}
 							type='date'
 							value={formData.finishDate}
 						>
 						</Input>
 					</FormControl>
-					<Typography variant='h3'>Eventos</Typography>
+				</Grid>
+				<Grid item xs={12}>
+					<Typography variant='h4'>Eventos</Typography>
 					<List dense>
 						{formData.eventList.map(value => (
 							<ListItem
 								key={value.id}
 								secondaryAction={<div>
-									<IconButton onClick={handleEdit(value.id)} edge="end" aria-label="edit" sx={{ marginRight: '10px' }}>
-										{value.editable ? <Save></Save> : <Edit />}
-									</IconButton>
-									<IconButton onClick={handleDelete(value.id)} edge="end" aria-label="delete">
+									<IconButton onClick={handleDeleteEvent(value.id)} edge="end" aria-label="delete">
 										<Delete />
 									</IconButton>
 								</div>}
 							>
 
 							</ListItem>))}
+						<ListItem sx={{ justifyContent: 'center' }}>
+							{addNewEvent ?
+								<div>
+									<Input onChange={handleOnChangeNewEvent('description')} variant="body2"
+										primary="Single-line item"
+										value={newEvent?.description}
+									>
+									</Input>
+									<Input onChange={handleOnChangeNewEvent('date')} variant="body2"
+										primary="Single-line item"
+										type='date'
+										value={newEvent?.date}
+									>
+									</Input>
+									<IconButton onClick={handleCreateEvent} >
+										<Save></Save>
+									</IconButton>
+								</div> :
+								<IconButton onClick={() => setAddNewEvent(true)} edge="end" aria-label="delete">
+									<AddIcon />
+								</IconButton>
+							}
+						</ListItem>
 					</List>
 				</Grid>
 			</Grid>
 
 		</form>
 	}
+
 	const step2 = () => {
 		return <form>
 			<Grid container spacing={3} my={"50px"} style={{ justifyContent: 'center' }}>
-				<Grid item xs={6}>
-					<FormControl fullWidth>
-						<InputLabel id="carrera-selector">Carrera</InputLabel>
-						<Select
-							id="carrera-selector"
-							required
-							fullWidth
-							label="Carrera"
-							onChange={handleChange('carrera')}
-							placeholder='Carrera'
-							value={formData.carrera}
-						>{
-								carreras.map(value => (<MenuItem key={value.id} value={value.id}>
-									{value.nombre}
-								</MenuItem>))
-							}
-
-						</Select>
-					</FormControl>
-				</Grid>
-				<Grid item xs={6}>
-					<FormControl fullWidth>
-						<InputLabel id="anno-selector">Anno</InputLabel>
-						<Select
-							id="anno-selector"
-							required
-							fullWidth
-							onChange={handleChange('anno')}
-							label="Anno"
-							placeholder='Anno'
-							value={formData.anno}
-						>{
-								[1, 2, 3, 4, 5].map(value => (<MenuItem key={value} value={value}>
-									{value}
-								</MenuItem>))
-							}
-
-						</Select>
-					</FormControl>
-
-				</Grid>
-				<Grid item xs={6}>
-					<FormControl fullWidth>
-						<InputLabel id="time-selector">Horario</InputLabel>
-						<Select
-							id="time-selector"
-							required
-							fullWidth
-							onChange={handleChange('time')}
-							label="Horario"
-							placeholder='Horario'
-							value={formData.time}
-						>{
-								['Mañana', 'Tarde'].map(value => (<MenuItem key={value} value={value}>
-									{value}
-								</MenuItem>))
-							}
-
-						</Select>
-					</FormControl>
-
-				</Grid>
-				<Grid item xs={6}>
-					<FormControl fullWidth>
-						<InputLabel id="semestre-selector">semestre</InputLabel>
-						<Select
-							id="semestre-selector"
-							required
-							onChange={handleChange('semestre')}
-							fullWidth
-							label="semestre"
-							placeholder='semestre'
-							value={formData.semestre}
-						>{
-								[1, 2].map(value => (<MenuItem key={value} value={value}>
-									{value}
-								</MenuItem>))
-							}
-
-						</Select>
-					</FormControl>
-				</Grid>
-				<Grid item xs={12}><Divider ></Divider></Grid>
 				<Grid item xs={12}><Typography variant='h3' textAlign={'center'}>Asignaturas</Typography></Grid>
 				<Grid item xs={10} marginLeft={"30px"} justifyContent={'center'}>
 					<List dense={true}>
@@ -400,6 +441,7 @@ export function CreateHorario() {
 			</Grid>
 		</form>
 	}
+
 	const nextStep = () => {
 		setStep(value => value + 1)
 
@@ -408,6 +450,8 @@ export function CreateHorario() {
 		setStep(value => value - 1)
 	}
 	const currentStep = () => {
+		if (step === 0)
+			return step0()
 		if (step === 1)
 			return step1()
 		if (step === 2)

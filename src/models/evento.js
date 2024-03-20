@@ -9,10 +9,9 @@ module.exports = (sequelize, Sequelize) => {
 		nombre: {
 			type: Sequelize.STRING
 		}
-
 	});
 	Evento.associate = models => {
-
+		Evento.belongsTo(models.Curso)
 	}
 	return Evento;
 };

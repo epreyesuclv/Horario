@@ -1,6 +1,5 @@
 import { apiClient, getHeaders } from './index'
 export const updateProfesor = (id, name) => {
-	console.log('update')
 	return apiClient.put("/profesor", { id, nombre: name }, {
 		headers: {
 			...getHeaders(),
@@ -139,6 +138,21 @@ export const deleteHorario = (id) => {
 
 export const saveHorario = (id, info) => {
 	return apiClient.put('/horario', { id, info }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const createEvent = (event, formData) => {
+	return apiClient.post('/event', { event, formData }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+export const deleteEvent = (event) => {
+	return apiClient.delete('/event', { params: { id: event } }, {
 		headers: {
 			...getHeaders(),
 		}

@@ -17,6 +17,7 @@ module.exports = (sequelize, Sequelize) => {
 	Curso.associate = models => {
 		Curso.hasMany(models.AsignProfCurso)
 		Curso.hasMany(models.Horario)
+		Curso.hasMany(models.Evento)
 		Curso.belongsTo(models.Carrera)
 	}
 	return Curso;

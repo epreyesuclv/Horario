@@ -12,6 +12,5 @@ export const getHeaders = () => ({
 
 })
 export const apiClient = axios.create({
-	baseURL: "http://localhost:8080",
-
+	baseURL: process.env.NODE_ENV === 'production' ? "" : "http://localhost:8080",
 });

@@ -10,11 +10,10 @@ const models = {}
 let sequelize
 
 const database = {
-  database: 'DataBase_Tesis',
+  database: 'horario_db_new',
   username: 'postgres',
   password: '1234',
   dialect: 'postgres'
-
 }
 sequelize = new Sequelize(
   database.database,
@@ -56,6 +55,7 @@ fs.readdirSync(__dirname)
     modelName = modelName.charAt(0).toUpperCase() + modelName.slice(1) // Capitalize
     models[modelName] = model
   })
+  console.log(models)
 
 Object.keys(models).forEach(key => {
   if ('associate' in models[key]) {
