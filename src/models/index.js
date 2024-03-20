@@ -10,9 +10,9 @@ const models = {}
 let sequelize
 
 const database = {
-  database: 'horario_db_new',
+  database: 'Horario',
   username: 'postgres',
-  password: '1234',
+  password: 'rot',
   dialect: 'postgres'
 }
 sequelize = new Sequelize(

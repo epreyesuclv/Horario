@@ -54,7 +54,7 @@ export function Heading() {
 
 	return (
 		<AppBar style={{ backgroundColor: "gray" }} position="static">
-			<Container maxWidth="xl">
+			<Container maxWidth="xl" style={{ boxShadow:"0px 0px 15px 0px white" }}>
 				<Toolbar disableGutters>
 					<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
 					<Typography

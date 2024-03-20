@@ -23,7 +23,7 @@ export function Login() {
 	}
 	return (
 		<div style={{ width: "100%" }} className="backgroundOrange">
-			<div className="formulario pt-5 pb-5">
+			<div className="formulario pt-5 pb-5" style={{ backgroundColor:"#d0c8c8",boxShadow:"0px 0px 20px 12px rgba(20,0,20,0.5)"}}>
 				<h1 className="text-center">Inicio de sesión</h1>
 				<div style={{ maxWidth: "450px" }} className="mx-auto">
 					<form onSubmit={handleLogin}>
