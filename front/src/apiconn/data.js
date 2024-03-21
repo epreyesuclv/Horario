@@ -38,12 +38,10 @@ export const getCarreras = (name) => {
 	})
 }
 
-export const getAllAsignaturasBy = (anno, semestre, carrera) => {
+export const getAllAsignaturasBy = (curso) => {
 	return apiClient.get('/getAsignaturaByCarrera', {
 		params: {
-			anno,
-			semestre,
-			carrera
+			cursoId: curso.id
 		},
 		headers: {
 			...getHeaders(),
@@ -153,6 +151,20 @@ export const createEvent = (event, formData) => {
 }
 export const deleteEvent = (event) => {
 	return apiClient.delete('/event', { params: { id: event } }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+export const createCurso = (data) => {
+	return apiClient.post('/curso', data, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+export const updateCurso = (id, data) => {
+	return apiClient.put('/curso', { id, data }, {
 		headers: {
 			...getHeaders(),
 		}

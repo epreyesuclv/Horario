@@ -137,7 +137,7 @@ router.get('/carreras', async (req, res) => {
 })
 
 router.get('/getAsignaturaByCarrera', async (req, res) => {
-	const { semestre, anno, carrera } = req.query
+	const { cursoId } = req.query
 
 	const allAsignaturas = await Asignatura.findAll({
 		include: [{
@@ -147,15 +147,11 @@ router.get('/getAsignaturaByCarrera', async (req, res) => {
 				require: true,
 				model: Curso,
 				where: {
-					semestre,
-					anno
+					id: cursoId,
 				},
 				include: [{
 					require: true,
 					model: Carrera,
-					where: {
-						id: carrera
-					}
 				}]
 			}]
 		}]
@@ -181,9 +177,7 @@ router.post('/asignatura', async (req, res) => {
 	const { asignName, profesorId, carrera, anno, frecuency, semestre } = req.body
 	console.log(req.body)
 
-	let curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
-	if (!curso)
-		curso = await Curso.create({ carreraId: carrera, anno, semestre })
+	const curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
 
 	let asignatura = await Asignatura.findOne({ where: { nombre: asignName } })
 	if (!asignatura)
