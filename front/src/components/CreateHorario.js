@@ -1,9 +1,32 @@
 import { Button, Divider, FormControl, Grid, IconButton, Input, InputLabel, List, ListItem, MenuItem, Select, Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura, createNewAsignaturaForCurso, createHorario, createEvent, deleteEvent } from '../apiconn/data'
+import { getCarreras, getAllAsignaturasBy, deleteAsignatura, getAllProfesors, updateAsignatura, createNewAsignaturaForCurso, createHorario, createEvent, deleteEvent, createCurso, updateCurso } from '../apiconn/data'
 import { AddCircleOutline, Delete, Edit, Save } from '@mui/icons-material'
 import { GridInput } from './GridInput'
 import AddIcon from '@mui/icons-material/Add';
+import { EditWeekHorario } from './EditWeekHorario'
+import moment from 'moment'
+
+const horarioData = [{
+	num: 1,
+	semana: [
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+	]
+},
+{
+	num: 2,
+	semana: [
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+		["-", "-", "-", "-", "-", "-"],
+	]
+}]
 
 
 export function CreateHorario() {
@@ -16,8 +39,10 @@ export function CreateHorario() {
 		semanas: "",
 		startDate: new Date(),
 		finishDate: new Date(),
-		eventList: []
 	})
+	const [eventList, setEventList] = useState([])
+	const [events, setEvents] = useState(horarioData)
+	const [curso, setCurso] = useState()
 	const [carreras, setCarreras] = useState([])
 	const [asignaturas, setAsignaturas] = useState([])
 	const [profesores, setProfesores] = useState([])
@@ -31,9 +56,9 @@ export function CreateHorario() {
 	const [addNewEvent, setAddNewEvent] = useState()
 
 	const fetchAsignaturas = useCallback(async () => {
-
-		if (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "") {
-			const data = await getAllAsignaturasBy(formData.anno, formData.semestre, formData.carrera)
+		if (curso) {
+			const data = await getAllAsignaturasBy(curso)
+			console.log(data)
 			setAsignaturas(data.data.map(value => ({
 				nombre: value.nombre,
 				frecuency: value.asignProfCursos[0].frecuency,
@@ -44,8 +69,27 @@ export function CreateHorario() {
 			// getAllEventsBy(formData.carrera, formData.anno)
 		}
 
-	}, [formData])
+	}, [curso])
 
+	useEffect(() => {
+		if (formData.semanas) {
+			// generate <semanas> data
+			const data = []
+			for (let i = 0; i < formData.semanas; i++) {
+				data.push({
+					num: i + 1,
+					semana: [
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+					]
+				})
+			}
+			setEvents(data)
+		}
+	}, [formData])
 
 	useEffect(() => {
 		async function fetch() {
@@ -63,6 +107,16 @@ export function CreateHorario() {
 			setRefresh(false)
 		}
 	}, [fetchAsignaturas, refresh])
+
+	useEffect(() => {
+		fetchAsignaturas()
+	}, [curso, fetchAsignaturas])
+
+	const handleCreateCurso = () => {
+		createCurso(formData).then((value) => {
+			setCurso(value.data)
+		})
+	}
 
 	const handleEdit = (id) => () => {
 		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
@@ -90,6 +144,7 @@ export function CreateHorario() {
 		asignatura.nombre = event.target.value
 		setAsignaturas([...asignaturas])
 	}
+
 	const handleOnChangeFrecuency = (id) => (event) => {
 		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
 		asignatura.frecuency = event.target.value
@@ -105,6 +160,7 @@ export function CreateHorario() {
 	const handleOnChangeNameNew = (event) => {
 		setNewAsignatura(event.target.value)
 	}
+
 	const handleOnChangeFrecuencyNew = (event) => {
 		setNewFrecuency(event.target.value)
 	}
@@ -112,6 +168,7 @@ export function CreateHorario() {
 	const handleOnChangeProfesorNew = (event) => {
 		setNewProfesor(event.target.value)
 	}
+
 	const handleChange = (name) => (value) => {
 		setFormData(data => ({ ...data, [name]: value.target.value }))
 	}
@@ -201,7 +258,7 @@ export function CreateHorario() {
 			</Grid>
 			<Grid item xs={6}>
 				<FormControl fullWidth>
-					<InputLabel id="semestre-selector">semestre</InputLabel>
+					<InputLabel id="semestre-selector">Semestre</InputLabel>
 					<Select
 						id="semestre-selector"
 						required
@@ -220,6 +277,34 @@ export function CreateHorario() {
 				</FormControl>
 			</Grid>
 			<Grid item xs={12}><Divider ></Divider></Grid>
+			<Grid item xs={6}>
+				<FormControl fullWidth>
+					<InputLabel id="startDate-semanas">Fecha inicio</InputLabel>
+					<Input
+						id='startDate-semanas'
+						required
+						fullWidth
+						onChange={handleChange('startDate')}
+						type='date'
+						value={formData.startDate}
+					>
+					</Input>
+				</FormControl>
+			</Grid>
+			<Grid item xs={6}>
+				<FormControl fullWidth>
+					<InputLabel id="finishDate-semanas">Fecha Fin</InputLabel>
+					<Input
+						id='finishDate-semanas'
+						required
+						fullWidth
+						onChange={handleChange('finishDate')}
+						type='date'
+						value={formData.finishDate}
+					>
+					</Input>
+				</FormControl>
+			</Grid>
 		</Grid>
 	}
 
@@ -232,50 +317,36 @@ export function CreateHorario() {
 	}
 
 	const handleCreateEvent = () => {
-		createEvent(newEvent, formData).then(value => {
+		createEvent(newEvent, { anno: formData.anno, carrera: formData.carrera, semestre: formData.semestre }).then(value => {
 			setAddNewEvent(false)
 		})
 	}
+	const handleEditDate = () => {
+		updateCurso(curso, { inicio: formData.startDate, fin: formData.finishDate })
+	}
 
 	const step1 = () => {
+		const semanas = moment(formData.finishDate).diff(moment(formData.startDate), 'weeks') + 1
+		if (semanas !== formData.semanas)
+			setFormData(data => ({ ...data, semanas }))
+		console.log(events)
 		return <form style={{ marginRight: "30px", marginLeft: "30px" }}>
 			<Grid container spacing={5} my={"10px"}>
 				<Grid item xs={12}>
-					<Typography style={{ textAlign: 'center' }} variant='h3'>Configuración de Fechas</Typography>
+					<Typography style={{ textAlign: 'center' }} variant='h3'>Configuración de eventos</Typography>
 				</Grid>
-				<Grid item xs={6}>
-					<FormControl fullWidth>
-						<InputLabel id="startDate-semanas">Fecha inicio</InputLabel>
-						<Input
-							id='startDate-semanas'
-							required
-							fullWidth
-							onChange={handleChange('startDate')}
-							type='date'
-							value={formData.startDate}
-						>
-
-						</Input>
-					</FormControl>
-				</Grid>
-				<Grid item xs={6}>
-					<FormControl fullWidth>
-						<InputLabel id="finishDate-semanas">Fecha Fin</InputLabel>
-						<Input
-							id='finishDate-semanas'
-							required
-							fullWidth
-							onChange={handleChange('finishDate')}
-							type='date'
-							value={formData.finishDate}
-						>
-						</Input>
-					</FormControl>
-				</Grid>
+				<EditWeekHorario
+					horario={events}
+					setHorario={setEvents}
+					selector={["-", "*"]}
+					handleSave={setEvents}
+					amountSemanas={semanas}
+					fechaInicio={formData.startDate}
+				/>
 				<Grid item xs={12}>
 					<Typography variant='h4'>Eventos</Typography>
 					<List dense>
-						{formData.eventList.map(value => (
+						{eventList.map(value => (
 							<ListItem
 								key={value.id}
 								secondaryAction={<div>
@@ -312,7 +383,6 @@ export function CreateHorario() {
 					</List>
 				</Grid>
 			</Grid>
-
 		</form>
 	}
 
@@ -439,6 +509,10 @@ export function CreateHorario() {
 	}
 
 	const nextStep = () => {
+		if (step === 0)
+			handleCreateCurso()
+		if (step === 1)
+			handleEditDate()
 		setStep(value => value + 1)
 
 	}
@@ -458,7 +532,6 @@ export function CreateHorario() {
 		<div className="container-fluid">
 			{currentStep()}
 			<div className='flex'>
-
 			</div>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
 				<Button style={{ margin: "20px" }} variant='contained' onClick={previousStep} >previous</Button>

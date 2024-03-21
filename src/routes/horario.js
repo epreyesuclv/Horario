@@ -137,7 +137,7 @@ router.get('/carreras', async (req, res) => {
 })
 
 router.get('/getAsignaturaByCarrera', async (req, res) => {
-	const { semestre, anno, carrera } = req.query
+	const { cursoId } = req.query
 
 	const allAsignaturas = await Asignatura.findAll({
 		include: [{
@@ -147,15 +147,11 @@ router.get('/getAsignaturaByCarrera', async (req, res) => {
 				require: true,
 				model: Curso,
 				where: {
-					semestre,
-					anno
+					id: cursoId,
 				},
 				include: [{
 					require: true,
 					model: Carrera,
-					where: {
-						id: carrera
-					}
 				}]
 			}]
 		}]

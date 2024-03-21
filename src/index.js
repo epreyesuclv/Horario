@@ -21,6 +21,8 @@ const profesorRoute = require("./routes/profesor")
 const horarioRoute = require("./routes/horario")
 const userRoute = require("./routes/user")
 const eventRoute = require('./routes/events')
+const cursoRoute = require('./routes/curso')
+
 app.use(cors(corsOptions));
 
 // parse requests of content-type - application/json
@@ -34,6 +36,8 @@ app.use(profesorRoute)
 app.use(horarioRoute)
 app.use(userRoute)
 app.use(eventRoute)
+app.use(cursoRoute)
+
 // simple route
 app.get("/", (req, res) => {
 	res.json({ message: "Welcome to bezkoder application." });
