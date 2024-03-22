@@ -6,6 +6,7 @@ import { GridInput } from './GridInput'
 import AddIcon from '@mui/icons-material/Add';
 import { EditWeekHorario } from './EditWeekHorario'
 import moment from 'moment'
+import { DatePicker } from '@mui/x-date-pickers';
 
 const horarioData = [{
 	num: 1,
@@ -36,8 +37,8 @@ export function CreateHorario() {
 		semestre: "",
 		time: "",
 		semanas: "",
-		startDate: new Date(),
-		finishDate: new Date(),
+		startDate: moment().add(1, 'week').weekday(0),
+		finishDate: moment().add(10, 'week').weekday(0),
 	})
 	const [eventList, setEventList] = useState([])
 	const [events, setEvents] = useState(horarioData)
@@ -53,26 +54,25 @@ export function CreateHorario() {
 	const [step, setStep] = useState(0)
 	const [newEvent, setNewEvent] = useState()
 	const [addNewEvent, setAddNewEvent] = useState()
+	const [totalTurnos, setTotalTurnos] = useState(0)
+	const [turnosDisponibles, setTurnosDisponibles] = useState(0)
+	const [percent, setPercent] = useState(10)
 
 	const fetchAsignaturas = useCallback(async () => {
 		if (curso) {
 			const data = await getAllAsignaturasBy(curso)
-			console.log(data)
 			setAsignaturas(data.data.map(value => ({
-				nombre: value.nombre,
-				frecuency: value.asignProfCursos[0].frecuency,
+				nombre: value.asignatura.nombre,
+				frecuency: value.frecuency,
 				editable: false,
-				profesor: value.asignProfCursos[0].profesorId,
+				profesor: value.profesorId,
 				...value
 			})))
-			// getAllEventsBy(formData.carrera, formData.anno)
 		}
 
 	}, [curso])
-	console.log("newEvent", newEvent)
 
 	const handleDisableNextButton = () => {
-		console.log("step", step)
 		return !((step === 0 && (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "" && formData.time !== "")) || (step === 1))
 	}
 
@@ -120,6 +120,36 @@ export function CreateHorario() {
 		fetchAsignaturas()
 	}, [curso, fetchAsignaturas])
 
+	useEffect(() => {
+		if (formData.finishDate && formData.startDate)
+			setTotalTurnos((moment(formData.finishDate).diff(formData.startDate, 'week') + 1) * 15)
+	}, [formData])
+
+	useEffect(() => {
+		let turnosDisp = 0
+		events.forEach(event => {
+			event.semana.forEach(semana => {
+				semana.forEach((turno, index) => {
+					if (formData.time === "Mañana") {
+						if (index < 3 && turno === "-") {
+							turnosDisp++
+						}
+					}
+					else {
+						if (index >= 3 && turno === "-") {
+							turnosDisp++
+						}
+					}
+
+				})
+			})
+		})
+		asignaturas.forEach(asignatura => {
+			turnosDisp -= asignatura.frecuency / 2
+		})
+		setTurnosDisponibles(turnosDisp)
+	}, [events, asignaturas, formData.time])
+
 	const handleCreateCurso = () => {
 		createCurso(formData).then((value) => {
 			setCurso(value.data)
@@ -132,19 +162,15 @@ export function CreateHorario() {
 			asignatura.editable = true
 			setAsignaturas([...asignaturas])
 		} else {
-			console.log(asignatura)
 			asignatura.editable = false
-			updateAsignatura(asignatura.asignProfCursos[0].id, asignatura.profesor, asignatura.frecuency)
+			updateAsignatura(asignatura.id, asignatura.profesor, asignatura.frecuency)
 			setAsignaturas([...asignaturas])
 		}
 	}
 
 	const handleDelete = (id) => () => {
-		const asignatura = asignaturas.find(asignatura => asignatura.id === id)
-		if (asignatura.asignProfCursos) {
-			deleteAsignatura(asignatura.asignProfCursos.map(asignProfCurso => asignProfCurso.id))
-			setRefresh(true)
-		}
+		deleteAsignatura(id)
+		setRefresh(true)
 	}
 
 	const handleOnChangeName = (id) => (event) => {
@@ -197,6 +223,11 @@ export function CreateHorario() {
 		createHorario(formData).then(value => {
 			window.location.href = '/revisar_horario/' + value.data.horario
 		})
+	}
+
+	const disableDay = (date) => {
+		const dayOfWeek = moment(date).weekday()
+		return dayOfWeek !== 0
 	}
 
 	const step0 = () => {
@@ -262,7 +293,6 @@ export function CreateHorario() {
 
 					</Select>
 				</FormControl>
-
 			</Grid>
 			<Grid item xs={6}>
 				<FormControl fullWidth>
@@ -286,65 +316,59 @@ export function CreateHorario() {
 			</Grid>
 			<Grid item xs={12}><Divider ></Divider></Grid>
 			<Grid item xs={6}>
-				<FormControl fullWidth>
-					<InputLabel id="startDate-semanas">Fecha inicio</InputLabel>
-					<Input
-						id='startDate-semanas'
-						required
-						fullWidth
-						onChange={handleChange('startDate')}
-						type='date'
-						value={formData.startDate}
-					>
-					</Input>
-				</FormControl>
+				<DatePicker
+					id='startDate-semanas'
+					label="Fecha de Inicio"
+					fullWidth
+					onChange={(date) => setFormData(value => ({ ...value, startDate: date }))}
+					value={formData.startDate}
+					shouldDisableDate={disableDay}
+
+				>
+				</DatePicker>
 			</Grid>
 			<Grid item xs={6}>
-				<FormControl fullWidth>
-					<InputLabel id="finishDate-semanas">Fecha Fin</InputLabel>
-					<Input
-						id='finishDate-semanas'
-						required
-						fullWidth
-						onChange={handleChange('finishDate')}
-						type='date'
-						value={formData.finishDate}
-					>
-					</Input>
-				</FormControl>
+				<DatePicker
+					id='finishDate-semanas'
+					label="Fecha de Fin"
+					fullWidth
+					onChange={(date) => setFormData(value => ({ ...value, finishDate: date }))}
+					value={formData.finishDate}
+					shouldDisableDate={disableDay}
+				>
+				</DatePicker>
 			</Grid>
 		</Grid>
 	}
 
 	const handleDeleteEvent = (id) => () => {
-		deleteEvent(id)
+		setEventList(list => list.filter((_, index) => index !== id))
 	}
 	const handleDeleteNewEvent = () => {
-		setNewEvent({
-			description: "",
-			fechaInicio: "",
-			fechaFin: ""
-		})
+		setNewEvent("")
 		setAddNewEvent(false)
-	}
-	const handleOnChangeNewEvent = (name) => (e) => {
-		setNewEvent(value => ({ ...value, [name]: e.target.value }))
 	}
 
 	const handleCreateEvent = () => {
-		createEvent(newEvent, { anno: formData.anno, carrera: formData.carrera, semestre: formData.semestre }).then(value => {
-			setAddNewEvent(false)
-		})
-	}
-	const handleEditDate = () => {
-		updateCurso(curso, { inicio: formData.startDate, fin: formData.finishDate })
+		setEventList(list => [...list, newEvent])
+		setAddNewEvent(false)
+
 	}
 
+	const handleReducePercent = () => {
+		// updateAsignatura(asignatura.asignProfCursos[0].id, asignatura.profesor, asignatura.frecuency)
+		// setAsignaturas([...asignaturas])
+		asignaturas.forEach(asign => {
+			asign.frecuency = parseInt(asign.frecuency - asign.frecuency * percent / 100)
+			updateAsignatura(asign.id, asign.profesor, asign.frecuency)
+		})
+		setAsignaturas([...asignaturas])
+	}
 	const step1 = () => {
 		const semanas = moment(formData.finishDate).diff(moment(formData.startDate), 'weeks') + 1
 		if (semanas !== formData.semanas)
 			setFormData(data => ({ ...data, semanas }))
-		console.log(events)
+		console.log("event lIst", eventList)
 		return <form style={{ marginRight: "30px", marginLeft: "30px" }}>
 			<Grid container spacing={5} my={"10px"}>
 				<Grid item xs={12}>
@@ -353,61 +377,51 @@ export function CreateHorario() {
 				<EditWeekHorario
 					horario={events}
 					setHorario={setEvents}
-					selector={["-", "*"]}
-					handleSave={setEvents}
+					selector={["-", "SC", ...eventList.map((_, index) => index)]}
 					amountSemanas={semanas}
 					fechaInicio={formData.startDate}
 				/>
 				<Grid item xs={12}>
+					<Divider />
 					<Typography textAlign="center" variant='h4'>Eventos</Typography>
-					<List dense>
-						{eventList.map(value => (
-							<ListItem
-								key={value.id}
-								secondaryAction={<div>
-									<IconButton onClick={handleDeleteEvent(value.id)} edge="end" aria-label="delete">
-										<Delete />
+					<Divider />
+					<div style={{ display: 'flex', maxWidth: "auto", justifyContent: "center" }}>
+						<List dense style={{ maxWidth: "400px" }}>
+							{eventList.map((value, index) => (
+								<ListItem
+									key={index}
+									secondaryAction={<div>
+										<IconButton onClick={handleDeleteEvent(index)} edge="end" aria-label="delete">
+											<Delete />
+										</IconButton>
+									</div>}
+								>
+									{index + " : " + value}
+								</ListItem>))}
+							<ListItem sx={{ justifyContent: 'center' }}>
+								{addNewEvent ?
+									<div>
+										<Input onChange={(e) => setNewEvent(e.target.value)} variant="body2"
+											primary="Single-line item"
+											value={newEvent}
+											style={{ margin: "10px" }}
+										>
+										</Input>
+										<IconButton onClick={handleCreateEvent} >
+											<Save></Save>
+										</IconButton>
+										< IconButton onClick={handleDeleteNewEvent}>
+											<Delete />
+										</IconButton>
+									</div> :
+									<IconButton onClick={() => setAddNewEvent(true)} edge="end" aria-label="delete">
+										<AddIcon />
 									</IconButton>
-								</div>}
-							>
+								}
+							</ListItem>
+						</List>
+					</div>
 
-							</ListItem>))}
-						<ListItem sx={{ justifyContent: 'center' }}>
-							{addNewEvent ?
-								<div>
-									<Input onChange={handleOnChangeNewEvent('description')} variant="body2"
-										primary="Single-line item"
-										value={newEvent?.description}
-										style={{ margin: "10px" }}
-									>
-									</Input>
-									<Input onChange={handleOnChangeNewEvent('fechaInicio')} variant="body2"
-										primary="Single-line item"
-										type='date'
-										value={newEvent?.fechaInicio}
-										style={{ margin: "30px" }}
-									>
-									</Input>
-									<Input onChange={handleOnChangeNewEvent('fechaFin')} variant="body2"
-										primary="Single-line item"
-										type='date'
-										value={newEvent?.fechaFin}
-										style={{ margin: "30px" }}
-									>
-									</Input>
-									<IconButton onClick={handleCreateEvent} >
-										<Save></Save>
-									</IconButton>
-									< IconButton onClick={handleDeleteNewEvent}>
-										<Delete />
-									</IconButton>
-								</div> :
-								<IconButton onClick={() => setAddNewEvent(true)} edge="end" aria-label="delete">
-									<AddIcon />
-								</IconButton>
-							}
-						</ListItem>
-					</List>
 				</Grid>
 			</Grid>
 		</form>
@@ -416,7 +430,35 @@ export function CreateHorario() {
 	const step2 = () => {
 		return <form>
 			<Grid container spacing={3} my={"50px"} style={{ justifyContent: 'center' }}>
-				<Grid item xs={12}><Typography variant='h3' textAlign={'center'}>Asignaturas</Typography></Grid>
+				<Grid item xs={4}><Typography variant='h3' textAlign={'center'}>Asignaturas</Typography></Grid>
+				<Grid item container xs={4}>
+					<Grid item xs={12}>{"Total de turnos disponible : " + turnosDisponibles}</Grid>
+					<Grid item xs={12}>{"Total de turnos : " + totalTurnos}</Grid>
+				</Grid>
+				<Grid visibility={turnosDisponibles >= 0 ? "hidden" : "visible"} item xs={2} style={{ textAlign: 'center' }}>
+					<FormControl style={{ minWidth: "100px" }}>
+						<InputLabel id="time-selector">Porciento</InputLabel>
+						<Select
+							id="percent-selector"
+							required
+							fullWidth
+							onChange={(event) => { setPercent(event.target.value) }}
+							label="percent"
+							placeholder='Porciento'
+							value={percent}
+						>{
+								[10, 11, 12, 13, 14, 15].map(value => (<MenuItem key={value} value={value}>
+									{value + "%"}
+								</MenuItem>))
+							}
+
+						</Select>
+					</FormControl>
+				</Grid>
+				<Grid item visibility={turnosDisponibles >= 0 ? "hidden" : "visible"} xs={2}>
+					<Button onClick={handleReducePercent} variant='contained'>Reducir</Button>
+				</Grid>
+				<Grid item ></Grid>
 				<Grid item xs={10} marginLeft={"30px"} justifyContent={'center'}>
 					<List dense={true}>
 						{asignaturas.map((value) => (
@@ -526,17 +568,17 @@ export function CreateHorario() {
 									<AddCircleOutline />
 								</IconButton>}
 						</ListItem>
+
 						<ListItem hidden={!formData.anno || !formData.carrera || !formData.semestre} sx={{ justifyContent: 'center' }}>
-							<Button disabled={!formData.anno || !formData.carrera || !formData.semestre || !formData.semanas > 0} onClick={handleGenerateHorario} sx={{ margin: "20px" }}>Generar Horario</Button>
+							<Button disabled={turnosDisponibles < 0} onClick={handleGenerateHorario} sx={{ margin: "20px" }}>Generar Horario</Button>
 						</ListItem>
 					</List>
 				</Grid>
 			</Grid>
-		</form>
+		</form >
 	}
 
 	const nextStep = () => {
-		console.log("que step estoy", step)
 		if (step === 0) {
 			handleCreateCurso()
 			setStep(value => value + 1)

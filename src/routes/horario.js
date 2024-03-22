@@ -89,6 +89,9 @@ router.post('/horario', async (req, res) => {
 				if (arrayFrecuency[horario.asignaturas[j].id] > 0) {
 					arrayFrecuency[horario.asignaturas[j].id]--
 					breaker = fill(data.semana, horario.asignaturas[j], time)
+					if (breaker) {
+						// registrar turno en restriccion profesor
+					}
 				}
 			}
 		console.log(data)
@@ -139,25 +142,24 @@ router.get('/carreras', async (req, res) => {
 router.get('/getAsignaturaByCarrera', async (req, res) => {
 	const { cursoId } = req.query
 
-	const allAsignaturas = await Asignatura.findAll({
+	const allAsignaturas = await AsignProfCurso.findAll({
+		where: {
+			cursoId
+		},
 		include: [{
-			model: AsignProfCurso,
 			require: true,
+			model: Curso,
+			where: {
+				id: cursoId,
+			},
 			include: [{
 				require: true,
-				model: Curso,
-				where: {
-					id: cursoId,
-				},
-				include: [{
-					require: true,
-					model: Carrera,
-				}]
+				model: Carrera,
 			}]
-		}]
+		}, Asignatura]
 	})
 
-	res.json(allAsignaturas.filter(value => value.asignProfCursos.length))
+	res.json(allAsignaturas)
 })
 
 router.get('/horario/:id', async (req, res) => {
@@ -175,7 +177,6 @@ router.put('/asignatura', async (req, res) => {
 
 router.post('/asignatura', async (req, res) => {
 	const { asignName, profesorId, carrera, anno, frecuency, semestre } = req.body
-	console.log(req.body)
 
 	const curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
 
@@ -187,10 +188,9 @@ router.post('/asignatura', async (req, res) => {
 	res.json(asignProfCourso)
 })
 
-router.post('/asignaProfCurso/deleteBulk', async (req, res) => {
-	const { ids } = req.body
-	console.log(req.body)
-	res.json(await AsignProfCurso.destroy({ where: { id: ids } }))
+router.delete('/asignaProfCurso', async (req, res) => {
+	const { id } = req.query
+	res.json(await AsignProfCurso.destroy({ where: { id } }))
 })
 
 module.exports = router

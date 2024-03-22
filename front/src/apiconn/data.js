@@ -48,8 +48,8 @@ export const getAllAsignaturasBy = (curso) => {
 		}
 	})
 }
-export const deleteAsignatura = (ids) => {
-	return apiClient.post('/asignaProfCurso/deleteBulk', { ids }, {
+export const deleteAsignatura = (id) => {
+	return apiClient.delete('/asignaProfCurso', { params:{id} }, {
 		headers: {
 			...getHeaders(),
 		}

@@ -63,9 +63,10 @@ export function CheckHorario() {
 					horario={horario.horario}
 					setHorario={setMapHorario}
 					selector={options}
-					saveHorario={handleSave}
 					amountSemanas={horario.amountSemanas}
 					fechaInicio={horario.fechaInicio}
+					btnSave
+					handleSave={handleSave}
 				></EditWeekHorario>
 			</Grid>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
