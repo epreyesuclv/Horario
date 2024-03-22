@@ -4,7 +4,7 @@ import { GridSelect } from "./GridSelect";
 import moment from 'moment'
 import '../styles/revisar_horario_style.css'
 import { GridInput } from "./GridInput";
-
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 export function EditWeekHorario({ horario, setHorario, selector, amountSemanas, fechaInicio, handleSave }) {
 	const [page, setPage] = useState(1)
 
@@ -47,12 +47,12 @@ export function EditWeekHorario({ horario, setHorario, selector, amountSemanas, 
 	const fechaFinSemana = cloneFecha.add(5, 'days').format("YYYY-MM-DD")
 	return (
 		<Grid style={{ maxWidth: "fit-content" }} margin={"30px"} container spacing={3}>
-			<Grid item xs={8}><Typography marginLeft={"50px"}>{fechaInSemana + " - " + fechaFinSemana}</Typography></Grid>
-			<Grid item xs={2}><Button onClick={handleSave} >{"Guardar Cambios"}</Button></Grid>
+			<Grid item xs={8} style={{ display:"flex" , justifyContent:"center", alignItems:"center"}}><Typography marginLeft={"50px"} fontSize={"x-large"}>{fechaInSemana + " - " + fechaFinSemana}</Typography></Grid>
+			<Grid item xs={4}><Button style={{ backgroundColor:" #3899f9", color:"white"  }} onClick={handleSave}> <SaveOutlinedIcon/>{"Guardar Cambios"}</Button></Grid>
 			<Grid item xs={12}>
 				{semana && (
-					<Container >
-						<Grid container spacing={2}>
+					<Container style={{ textAlign:"center" }}>
+						<Grid container spacing={2} style={{ justifyContent:"center" }}>
 							{
 								semana.map((iValue, iIndex) => {
 									return (
@@ -61,6 +61,7 @@ export function EditWeekHorario({ horario, setHorario, selector, amountSemanas, 
 											{iValue.map((jValue, jIndex) => {
 												return (
 													<GridSelect
+							            				style={{ fontSize:"xx-small" }}
 														disabled={semanaData?.veto}
 														onChange={onChangeAsign(iIndex, jIndex)}
 														xs={12}
@@ -81,14 +82,14 @@ export function EditWeekHorario({ horario, setHorario, selector, amountSemanas, 
 				)
 				}
 			</Grid>
-			<Grid item xs={12} justifyContent={'center'}>
+			<Grid item xs={12} style={{ justifyContent:"center" , display:"flex" }}>
 				<div style={{ width: "fit-content" }}>
 					<Grid item wrap="wrap"><Pagination sx={{ justifyContent: 'center' }} count={amountSemanas} page={page} onChange={changePage}></Pagination></Grid>
 				</div>
 
 			</Grid>
-			<Grid item xs={2}>
-				<ToggleButton onChange={onChangeVetoBool} selected={!!semanaData?.veto} >{semanaData?.veto ? "Semana sin clases" : "Hacer esta semana sin clases"}</ToggleButton>
+			<Grid item xs={6} style={{ justifyContent:"center", display:"flex" }}>
+				<ToggleButton onChange={onChangeVetoBool} selected={!!semanaData?.veto} style={{ backgroundColor:"#e7e7e7" }} >{semanaData?.veto ? "Semana sin clases" : "Hacer esta semana sin clases"}</ToggleButton>
 			</Grid>
 			{semanaData?.veto ? <GridInput xs={3} onChange={onChangeVeto} label="Descripcion" value={semanaData?.vetoDescription} ></GridInput> : null}
 		</Grid >

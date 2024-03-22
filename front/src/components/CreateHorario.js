@@ -70,8 +70,12 @@ export function CreateHorario() {
 
 	}, [curso])
 	const handleDisableNextButton = () => {
+		console.log("step", step)
+		return !((step === 0 && (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "" && formData.time !== "")) || (step === 1) )
+	}
 
-		return !(step === 0 && (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "" && formData.time !==""))
+	const handleDisablePreviousButton = () => {
+		return (step === 0)
 	}
 	useEffect(() => {
 		if (formData.semanas) {
@@ -194,7 +198,7 @@ export function CreateHorario() {
 	}
 
 	const step0 = () => {
-		return <Grid container spacing={3} my={"40px"}>
+		return <Grid container spacing={3} style={{ padding: "70px" }}>
 			<Grid item xs={12} style={{ textAlign: "center" }}><Typography variant='h3'>Curso</Typography></Grid>
 			<Grid item xs={6}>
 				<FormControl fullWidth>
@@ -518,11 +522,14 @@ export function CreateHorario() {
 	}
 
 	const nextStep = () => {
-		if (step === 0)
+		console.log("que step estoy", step)
+		if (step === 0) {
 			handleCreateCurso()
+			setStep(value => value + 1)
+		}
+
 		if (step === 1)
-			handleEditDate()
-		setStep(value => value + 1)
+			setStep(value => value + 1)
 
 	}
 	const previousStep = () => {
@@ -543,8 +550,8 @@ export function CreateHorario() {
 			<div className='flex'>
 			</div>
 			<div class=" text-right mr-3 " style={{ justifyContent: "center", display: "flex", alignItems: "center" }}>
-				<Button style={{ margin: "20px", fontSize: "x-small" }} variant='contained' onClick={previousStep} >previous</Button>
-				<a href="/home" class=" btn btn-secondary">Regresar al Home</a>
+				<Button style={{ margin: "20px", fontSize: "x-small" }} variant='contained' onClick={previousStep} disabled={handleDisablePreviousButton()}>previous</Button>
+				<a style={{ fontSize: "large" }} href="/home" class=" btn btn-secondary">Regresar al Home</a>
 				<Button style={{ margin: "20px", fontSize: "x-small" }} variant='contained' onClick={nextStep} disabled={handleDisableNextButton()}>next</Button>
 
 			</div>
