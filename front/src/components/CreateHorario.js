@@ -69,9 +69,11 @@ export function CreateHorario() {
 		}
 
 	}, [curso])
+	console.log("newEvent", newEvent)
+
 	const handleDisableNextButton = () => {
 		console.log("step", step)
-		return !((step === 0 && (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "" && formData.time !== "")) || (step === 1) )
+		return !((step === 0 && (formData.carrera !== "" && formData.anno !== "" && formData.semestre !== "" && formData.time !== "")) || (step === 1))
 	}
 
 	const handleDisablePreviousButton = () => {
@@ -317,7 +319,14 @@ export function CreateHorario() {
 	const handleDeleteEvent = (id) => () => {
 		deleteEvent(id)
 	}
-
+	const handleDeleteNewEvent = () => {
+		setNewEvent({
+			description: "",
+			fechaInicio: "",
+			fechaFin: ""
+		})
+		setAddNewEvent(false)
+	}
 	const handleOnChangeNewEvent = (name) => (e) => {
 		setNewEvent(value => ({ ...value, [name]: e.target.value }))
 	}
@@ -369,24 +378,29 @@ export function CreateHorario() {
 									<Input onChange={handleOnChangeNewEvent('description')} variant="body2"
 										primary="Single-line item"
 										value={newEvent?.description}
+										style={{ margin: "10px" }}
 									>
 									</Input>
-									<Input onChange={handleOnChangeNewEvent('date')} variant="body2"
+									<Input onChange={handleOnChangeNewEvent('fechaInicio')} variant="body2"
 										primary="Single-line item"
 										type='date'
-										value={newEvent?.date}
+										value={newEvent?.fechaInicio}
+										style={{ margin: "30px" }}
 									>
 									</Input>
-									<Input onChange={handleOnChangeNewEvent('date')} variant="body2"
+									<Input onChange={handleOnChangeNewEvent('fechaFin')} variant="body2"
 										primary="Single-line item"
 										type='date'
-										value={newEvent?.date}
+										value={newEvent?.fechaFin}
+										style={{ margin: "30px" }}
 									>
 									</Input>
 									<IconButton onClick={handleCreateEvent} >
 										<Save></Save>
 									</IconButton>
-									< IconButton onClick={handleDeleteEvent}></IconButton>
+									< IconButton onClick={handleDeleteNewEvent}>
+										<Delete />
+									</IconButton>
 								</div> :
 								<IconButton onClick={() => setAddNewEvent(true)} edge="end" aria-label="delete">
 									<AddIcon />
