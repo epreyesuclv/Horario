@@ -56,9 +56,7 @@ export function Profesor() {
 	}
 
 	const handleRestriction = (id) => () => {
-		if(onclick===true){
-			console.log("prueba");
-		}
+		window.location.href = '/restriccion_profesor/' + id
 	};
 
 	return (
@@ -75,8 +73,8 @@ export function Profesor() {
 								<IconButton onClick={handleDelete(value.id)} edge="end" aria-label="delete">
 									<Delete />
 								</IconButton>
-								<IconButton onclick={handleRestriction(value.id)} edge="end" aria-label="Restriction">
-									<LockIcon/>
+								<IconButton onClick={handleRestriction(value.id)} edge="end" aria-label="Restriction">
+									<LockIcon />
 								</IconButton>
 							</div>
 
@@ -109,11 +107,11 @@ export function Profesor() {
 						<IconButton onClick={() => setAddNew(true)} edge="end" aria-label="delete">
 							<AddIcon />
 						</IconButton>}
-						<IconButton onClick={() =>handleRestriction} edge="end" aria-label="restriction">
-							<LockIcon>
-								
-							</LockIcon>	
-						</IconButton>		
+					<IconButton onClick={() => handleRestriction} edge="end" aria-label="restriction">
+						<LockIcon>
+
+						</LockIcon>
+					</IconButton>
 				</ListItem>
 			</List>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>

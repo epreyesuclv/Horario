@@ -1,11 +1,5 @@
 import { apiClient, getHeaders } from './index'
-export const updateProfesor = (id, name) => {
-	return apiClient.put("/profesor", { id, nombre: name }, {
-		headers: {
-			...getHeaders(),
-		}
-	})
-}
+
 export const deleteProfesor = (id) => {
 	return apiClient.delete('/profesor/' + id, {
 		headers: {
@@ -22,6 +16,21 @@ export const getAllProfesors = () => {
 	})
 }
 
+export const getProfesor = (id) => {
+	return apiClient.get('/profesor/' + id, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
+
+export const updateProfesor = (id, name, restricciones) => {
+	return apiClient.put("/profesor", { id, nombre: name, restricciones }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
 export const addProfesor = (name) => {
 	return apiClient.post('/profesor', { nombre: name }, {
 		headers: {
@@ -49,7 +58,7 @@ export const getAllAsignaturasBy = (curso) => {
 	})
 }
 export const deleteAsignatura = (id) => {
-	return apiClient.delete('/asignaProfCurso', { params:{id} }, {
+	return apiClient.delete('/asignaProfCurso', { params: { id } }, {
 		headers: {
 			...getHeaders(),
 		}
@@ -103,9 +112,8 @@ export const deleteusuario = (id) => {
 		}
 	})
 }
-export const createHorario = (formData) => {
-	console.log(formData)
-	return apiClient.post('/horario', { ...formData }, {
+export const createHorario = (formData, events, eventList) => {
+	return apiClient.post('/horario', { ...formData, events, eventList }, {
 		headers: {
 			...getHeaders(),
 		}

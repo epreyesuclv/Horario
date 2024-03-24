@@ -9,6 +9,11 @@ router.get('/profesor', async (req, res) => {
 	const profs = await Profesor.findAll()
 	res.status(200).json(profs)
 })
+
+router.get('/profesor/:id', async (req, res) => {
+	const profs = await Profesor.findByPk(req.params.id)
+	res.status(200).json(profs)
+})
 router.post('/profesor', async (req, res) => {
 	console.log("profesor create")
 	const { nombre } = req.body
@@ -25,8 +30,16 @@ router.post('/profesor', async (req, res) => {
 })
 router.put('/profesor', async (req, res) => {
 	console.log("profesor update")
-	const { id, nombre } = req.body
-	const prof = await Profesor.update({ nombre }, { where: { id } })
+	const { id, nombre, restricciones } = req.body
+	const prof = await Profesor.findByPk(id)
+
+	if (nombre)
+		prof.nombre = nombre
+	if (restricciones)
+		prof.restricciones = restricciones
+
+	await prof.save()
+	await prof.reload()
 	if (prof) {
 		res.status(200).json({
 			message: 'OK'

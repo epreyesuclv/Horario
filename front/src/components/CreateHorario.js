@@ -7,6 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { EditWeekHorario } from './EditWeekHorario'
 import moment from 'moment'
 import { DatePicker } from '@mui/x-date-pickers';
+import { disableDay } from '../utils'
 
 const horarioData = [{
 	num: 1,
@@ -37,8 +38,8 @@ export function CreateHorario() {
 		semestre: "",
 		time: "",
 		semanas: "",
-		startDate: moment().add(1, 'week').weekday(0),
-		finishDate: moment().add(10, 'week').weekday(0),
+		startDate: moment().add(1, 'week').weekday(1),
+		finishDate: moment().add(10, 'week').weekday(1),
 	})
 	const [eventList, setEventList] = useState([])
 	const [events, setEvents] = useState(horarioData)
@@ -220,15 +221,11 @@ export function CreateHorario() {
 	}
 
 	const handleGenerateHorario = () => {
-		createHorario(formData).then(value => {
+		createHorario(formData, { events, eventList }).then(value => {
 			window.location.href = '/revisar_horario/' + value.data.horario
 		})
 	}
 
-	const disableDay = (date) => {
-		const dayOfWeek = moment(date).weekday()
-		return dayOfWeek !== 0
-	}
 
 	const step0 = () => {
 		return <Grid container spacing={3} style={{ padding: "70px" }}>

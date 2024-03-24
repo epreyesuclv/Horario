@@ -46,8 +46,6 @@ const router = express.Router()
 
 router.post('/horario', async (req, res) => {
 	const { semestre, anno, startDate, carrera, time, semanas } = req.body
-	console.log(req.body)
-
 	const curso = await Curso.findOne({
 		where: {
 			semestre,

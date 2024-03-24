@@ -16,6 +16,7 @@ import { Usuario } from './components/Usuario';
 import { ListHorario } from './components/ListHorario';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { RestrictionProfesor } from './components/RestrictionProfesor';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -28,7 +29,7 @@ root.render(
           <Route path='/login' element={<Login></Login>}></Route>
           <Route path='/logout' element={<Logout></Logout>}></Route>
           <Route path='/agregar_profesor' element={<Profesor></Profesor>}></Route>
-          <Route path='/restriccion_profesor/:id' element={<Profesor></Profesor>}></Route>
+          <Route path='/restriccion_profesor/:id' element={<RestrictionProfesor></RestrictionProfesor>}></Route>
           <Route path='/agregar_usuario' element={<Usuario></Usuario>}></Route>
           <Route path='/hacer_horario' element={<CreateHorario></CreateHorario>}></Route>
           <Route path='/list_horario' element={<ListHorario></ListHorario>}></Route>

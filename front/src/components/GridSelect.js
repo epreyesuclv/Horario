@@ -2,7 +2,6 @@ import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { useState } from "react";
 
 export function GridSelect({ label, xs, values, disabled, ...props }) {
-	console.log(disabled)
 	const [date] = useState(new Date())
 	return (
 		<Grid item xs={xs}>
