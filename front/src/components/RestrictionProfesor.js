@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import moment from 'moment'
 import '../styles/revisar_horario_style.css'
@@ -36,15 +36,17 @@ const horarioData = {
 export function RestrictionProfesor() {
 	const params = useParams()
 	const [restriction, setRestriction] = useState(horarioData)
+	const [asignaturas, setAsignaturas] = useState([])
 
 	useEffect(() => {
 		async function fetch() {
 			const { data } = await getProfesor(params.id)
-			if (data.restricciones)
+			setAsignaturas(data.asignaturas)
+			if (data.prof.restricciones)
 				setRestriction({
-					...data.restricciones,
-					startDate: moment(data.restricciones.startDate),
-					finishDate: moment(data.restricciones.finishDate)
+					...data.prof.restricciones,
+					startDate: moment(data.prof.restricciones.startDate),
+					finishDate: moment(data.prof.restricciones.finishDate)
 				})
 
 		}
@@ -54,9 +56,6 @@ export function RestrictionProfesor() {
 	useEffect(() => {
 		setRestriction(previous => {
 			const semanas = moment(previous.finishDate).diff(moment(previous.startDate), 'weeks') + 1
-			console.log(previous.finishDate, previous.startDate)
-			console.log(semanas)
-			console.log(previous.horario)
 			if (semanas < previous.horario.length)
 				return ({
 					...previous,
@@ -96,7 +95,13 @@ export function RestrictionProfesor() {
 
 
 	const options = ['-', 'SC']
+	asignaturas.forEach(value => {
+		options.push(value.id)
+	})
 	const amountSemanas = moment(restriction.finishDate).diff(moment(restriction.startDate), 'weeks') + 1
+	let disabled = false
+	if (asignaturas.length > 0)
+		disabled = true
 
 	return (
 		<Grid style={{ maxWidth: "fit-content" }} margin={"30px"} container spacing={3}>
@@ -125,6 +130,7 @@ export function RestrictionProfesor() {
 			</Grid>
 			<Grid item xs={12}>
 				<EditWeekHorario
+					disabled={disabled}
 					horario={restriction.horario}
 					setHorario={setMapHorario}
 					selector={options}
@@ -133,6 +139,10 @@ export function RestrictionProfesor() {
 					btnSave
 					handleSave={handleSave}
 				></EditWeekHorario>
+			</Grid>
+			<Grid my={5} item xs={6}>
+				<Typography variant="h3">Leyenda de asignaturas</Typography>
+				{asignaturas.map(value => (<Typography mx={2} my={2}>{value.id + " : " + value.nombre}</Typography>))}
 			</Grid>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
 				<a href="/home" class="btn btn-secondary">Regresar al Home</a>

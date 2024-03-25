@@ -5,16 +5,13 @@ import moment from 'moment'
 import '../styles/revisar_horario_style.css'
 import { GridInput } from "./GridInput";
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
-export function EditWeekHorario({ horario, setHorario, selector, amountSemanas, fechaInicio, handleSave, btnSave, extraUpdate }) {
+export function EditWeekHorario({ disabled, horario, setHorario, selector, amountSemanas, fechaInicio, handleSave, btnSave, extraUpdate }) {
 	const [page, setPage] = useState(1)
 
 	const changePage = (event, value) => {
 		setPage(value)
 	}
 
-	useEffect(() => {
-
-	}, [])
 	const onChangeAsign = (semana, turno) => (value) => {
 		const clone = [...horario]
 		const semanaToChange = clone.find(sem => sem.num === page).semana
@@ -61,7 +58,7 @@ export function EditWeekHorario({ horario, setHorario, selector, amountSemanas, 
 											{iValue.map((jValue, jIndex) => {
 												return (
 													<GridSelect
-														disabled={semanaData?.veto}
+														disabled={disabled || semanaData?.veto}
 														onChange={onChangeAsign(iIndex, jIndex)}
 														xs={12}
 														value={jValue}
