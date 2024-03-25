@@ -7,13 +7,13 @@ module.exports = (sequelize, Sequelize) => {
 			type: Sequelize.INTEGER
 		},
 		turno: {
-			type: Sequelize.STRING
+			type: Sequelize.INTEGER
 		},
 
 
 	});
 	Turnos.associate = models => {
-		Turnos.belongsTo(models.AsignProfCurso)
+		Turnos.belongsTo(models.AsignProfCurso, { onDestroy: 'CASCADE' })
 	}
 	return Turnos;
 };

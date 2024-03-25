@@ -74,8 +74,8 @@ export const updateAsignatura = (id, profesor, frecuency) => {
 	})
 }
 
-export const createNewAsignaturaForCurso = (asignName, profesorId, frecuency, { carrera, anno, semestre }) => {
-	return apiClient.post('/asignatura', { asignName, profesorId, frecuency, carrera, anno, semestre }, {
+export const createNewAsignaturaForCurso = (asignName, profesorId, frecuency, cursoId) => {
+	return apiClient.post('/asignatura', { asignName, profesorId, frecuency, cursoId }, {
 
 	})
 }
@@ -112,8 +112,8 @@ export const deleteusuario = (id) => {
 		}
 	})
 }
-export const createHorario = (formData, events, eventList) => {
-	return apiClient.post('/horario', { ...formData, events, eventList }, {
+export const createHorario = (cursoId, events, eventList, time) => {
+	return apiClient.post('/horario', { cursoId, events, eventList, time }, {
 		headers: {
 			...getHeaders(),
 		}
@@ -149,7 +149,13 @@ export const saveHorario = (id, info) => {
 		}
 	})
 }
-
+export const updateTurno = (semana, dia, turno, info) => {
+	return apiClient.put('/turno', { semana, dia, turno, info }, {
+		headers: {
+			...getHeaders(),
+		}
+	})
+}
 export const createEvent = (event, formData) => {
 	return apiClient.post('/event', { event, formData }, {
 		headers: {

@@ -1,10 +1,10 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import moment from 'moment'
 import '../styles/revisar_horario_style.css'
 
 import { useParams } from "react-router-dom";
-import { getHorarioById, saveHorario } from "../apiconn/data";
+import { getHorarioById, saveHorario, updateTurno } from "../apiconn/data";
 import { EditWeekHorario } from "./EditWeekHorario";
 const horarioData = {
 	amountSemanas: 2,
@@ -45,16 +45,20 @@ export function CheckHorario() {
 		fetch()
 	}, [params])
 
-	const handleSave = () => {
-		saveHorario(params.id, horario)
-	}
 	const setMapHorario = (value) => {
 		setHorario(valueH => {
 			return { ...valueH, horario: value }
 		})
+		saveHorario(params.id, horario)
+
 	}
-	const options = horario.asignaturas.map(value => value.id)
+	const registerChange = (semana, dia, turno, info) => {
+		updateTurno(semana, dia, turno, horario.asignaturas.find(value => value.index === info).id)
+	}
+
+	const options = horario.asignaturas.map(value => value.index)
 	options.push("-")
+	console.log(horario)
 	return (
 		<Grid style={{ maxWidth: "fit-content" }} margin={"30px"} container spacing={3}>
 			<Grid item xs={12}>
@@ -64,9 +68,16 @@ export function CheckHorario() {
 					selector={options}
 					amountSemanas={horario.amountSemanas}
 					fechaInicio={horario.fechaInicio}
-					btnSave
-					handleSave={handleSave}
+					extraUpdate={registerChange}
 				></EditWeekHorario>
+			</Grid>
+			<Grid my={5} item xs={6}>
+				<Typography variant="h3">Leyenda de asignaturas</Typography>
+				{horario.asignaturas.map(value => (<Typography mx={2} my={2}>{value.index + " : " + value.nombre + " ( " + value.profesor?.nombre + " )"}</Typography>))}
+			</Grid>
+			<Grid my={5} item xs={6}>
+				<Typography variant="h3">Leyenda de eventos</Typography>
+				{horario.eventList?.map((value, index) => (<Typography mx={2} my={2}>{index + " : " + value}</Typography>))}
 			</Grid>
 			<div class="fixed-bottom text-right mr-3 mb-3" style={{ textAlign: 'center' }}>
 				<a href="/home" class="btn btn-secondary">Regresar al Home</a>

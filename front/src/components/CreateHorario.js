@@ -209,7 +209,7 @@ export function CreateHorario() {
 	}
 
 	const handleCreate = () => {
-		createNewAsignaturaForCurso(newAsignatura, newProfesor, newFrecuency, formData).then(() => setRefresh(true))
+		createNewAsignaturaForCurso(newAsignatura, newProfesor, newFrecuency, curso.id).then(() => setRefresh(true))
 		handleDeleteNew()
 	}
 
@@ -221,7 +221,7 @@ export function CreateHorario() {
 	}
 
 	const handleGenerateHorario = () => {
-		createHorario(formData, { events, eventList }).then(value => {
+		createHorario(curso.id, events, eventList, formData.time).then(value => {
 			window.location.href = '/revisar_horario/' + value.data.horario
 		})
 	}
@@ -374,7 +374,7 @@ export function CreateHorario() {
 				<EditWeekHorario
 					horario={events}
 					setHorario={setEvents}
-					selector={["-", "SC", ...eventList.map((_, index) => index)]}
+					selector={["-", "SC", ...eventList.map((_, index) => `${index}*`)]}
 					amountSemanas={semanas}
 					fechaInicio={formData.startDate}
 				/>

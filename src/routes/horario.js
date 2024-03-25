@@ -1,9 +1,9 @@
 const { fill, openSchedule, checkallHour } = require('../controllers/horario')
-const { Horario, Profesor, Asignatura, AsignProfCurso, Curso, Carrera } = require('../models')
+const { Horario, Profesor, Asignatura, AsignProfCurso, Curso, Carrera, Turno } = require('../models')
 // const { authentication } = require('../middleware/auth')
 const express = require('express')
 const router = express.Router()
-
+const moment = require('moment')
 // router.use(authentiecation)
 /**
  * const horarioData = {
@@ -45,21 +45,20 @@ const router = express.Router()
 
 
 router.post('/horario', async (req, res) => {
-	const { semestre, anno, startDate, carrera, time, semanas } = req.body
+	const { cursoId, eventList, events, time } = req.body
 	const curso = await Curso.findOne({
 		where: {
-			semestre,
-			anno,
-			carreraId: carrera
+			id: cursoId
 		},
-		include: [{ model: AsignProfCurso, include: Asignatura }]
+		include: [{ model: AsignProfCurso, include: [Profesor, Asignatura] }]
 	})
 	const asignaturas = curso.asignProfCursos
 	//{ id: 3, nombre: "Fisisca", frecuency: 32 }]
 	const horario = {
-		amountSemanas: Number(semanas),
-		fechaInicio: startDate,
-		asignaturas: asignaturas.map(value => ({ id: value.asignatura.id, nombre: value.asignatura.nombre, frecuency: value.frecuency })),
+		amountSemanas: Number(moment(curso.fin).diff(moment(curso.inicio), 'weeks') + 1),
+		fechaInicio: curso.inicio,
+		asignaturas: asignaturas.map((value, index) => ({ id: value.asignatura.id, index, asignProfCursoId: value.id, nombre: value.asignatura.nombre, frecuency: value.frecuency, profesor: value.profesor })),
+		eventList: eventList || [],
 		horario: []
 	}
 	const arrayFrecuency = []
@@ -69,30 +68,49 @@ router.post('/horario', async (req, res) => {
 		arrayFrecuency[asignatura.id] = Number(asignatura.frecuency) / 2
 	}
 
+
+	// checking all profesor has restriction
+	const fixAllProfesors = async (profesor) => {
+		if (!profesor.restricciones) {
+			// generate <semanas> data
+			const data = []
+			for (let i = 0; i < horario.amountSemanas; i++) {
+				data.push({
+					num: i + 1,
+					semana: [
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+						["-", "-", "-", "-", "-", "-"],
+					]
+				})
+			}
+			await profesor.update({ restricciones: { horario: data, startDate: curso.inicio, finishDate: curso.fin }, })
+		}
+
+	}
+
+	await Promise.all(asignaturas.map(async a => {
+		return fixAllProfesors(a.profesor)
+	}))
+	await curso.reload()
+
 	for (let i = 0; i < horario.amountSemanas; i++) {
 
-		const data = {
-			num: i + 1,
-			semana: [
-				["-", "-", "-", "-", "-", "-"],
-				["-", "-", "-", "-", "-", "-"],
-				["-", "-", "-", "-", "-", "-"],
-				["-", "-", "-", "-", "-", "-"],
-				["-", "-", "-", "-", "-", "-"],
-			]
-		}
+		const data = events.find(e => e.num === i + 1)
+		console.log("prevouis data", data)
+		if (data.veto) continue
+
 		let breaker = true
 		while (breaker && checkallHour(arrayFrecuency))
 			for (let j = 0; j < horario.asignaturas.length; j++) {
 				if (arrayFrecuency[horario.asignaturas[j].id] > 0) {
 					arrayFrecuency[horario.asignaturas[j].id]--
-					breaker = fill(data.semana, horario.asignaturas[j], time)
-					if (breaker) {
-						// registrar turno en restriccion profesor
-					}
+					breaker = await fill(data, horario.asignaturas[j], time)
 				}
 			}
-		console.log(data)
+		console.log(data, arrayFrecuency)
 		horario.horario.push(data)
 	}
 
@@ -174,13 +192,13 @@ router.put('/asignatura', async (req, res) => {
 })
 
 router.post('/asignatura', async (req, res) => {
-	const { asignName, profesorId, carrera, anno, frecuency, semestre } = req.body
-
-	const curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
+	const { asignName, profesorId, carrera, cursoId, frecuency } = req.body
+	console.log(req.body)
+	const curso = await Curso.findByPk(cursoId)
 
 	let asignatura = await Asignatura.findOne({ where: { nombre: asignName } })
 	if (!asignatura)
-		asignatura = await Asignatura.create({ nombre: asignName })
+		asignatura = await Asignatura.create({ nombre: asignName, carreraId: carrera, })
 
 	const asignProfCourso = await AsignProfCurso.create({ profesorId, asignaturaId: asignatura.id, cursoId: curso.id, frecuency })
 	res.json(asignProfCourso)
@@ -189,6 +207,12 @@ router.post('/asignatura', async (req, res) => {
 router.delete('/asignaProfCurso', async (req, res) => {
 	const { id } = req.query
 	res.json(await AsignProfCurso.destroy({ where: { id } }))
+})
+
+router.put('/turno', async (req, res) => {
+	const { semana, dia, turno } = req.body
+	await Turno.update({ asignProfCursoId: req.body.info }, { where: { semana, dia, turno } })
+	res.status(200)
 })
 
 module.exports = router

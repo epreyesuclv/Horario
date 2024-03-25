@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
 		AsignProfCurso.belongsTo(models.Curso)
 		AsignProfCurso.belongsTo(models.Profesor)
 		AsignProfCurso.belongsTo(models.Asignatura)
-
+		AsignProfCurso.hasMany(models.Turno)
 	}
 	return AsignProfCurso;
 };

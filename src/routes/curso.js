@@ -6,10 +6,11 @@ const router = express.Router()
 
 router.post('/curso', async (req, res) => {
 	const { carrera, anno, semestre, finishDate: fin, startDate: inicio } = req.body
-
 	let curso = await Curso.findOne({ where: { carreraId: carrera, anno, semestre } })
 	if (!curso)
 		curso = await Curso.create({ carreraId: carrera, anno, semestre, inicio, fin })
+	else
+		await curso.update({ fin, inicio })
 
 	res.status(200).json(curso.toJSON())
 })
